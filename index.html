@@ -11,13 +11,30 @@ h2{margin:30px 0 14px;font-size:23px}.term{padding:20px;display:flex;flex-direct
 .footer{margin-top:35px;padding:24px;border-top:1px solid var(--line);color:var(--muted);text-align:center}
 @media(max-width:720px){.problem-grid,.term-grid{grid-template-columns:1fr}.hero h1{font-size:27px}}
 @media print{.sticky,.copy{display:none}.hero{background:#fff;color:#000;border-bottom:2px solid #000}.hero p{color:#333}.term,.problem,.intro{break-inside:avoid}}
+
+/* 디자인 스타일 미리보기 */
+.style-preview{height:150px;border-radius:14px;margin:10px 0 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.style-preview .mini-card{width:72%;padding:20px;text-align:center;font-weight:800}
+.preview-glass{background:linear-gradient(135deg,#6947e8,#ec66a8)}
+.preview-glass .mini-card{background:rgba(255,255,255,.20);border:1px solid rgba(255,255,255,.45);box-shadow:0 8px 30px rgba(0,0,0,.16);backdrop-filter:blur(12px);color:white;border-radius:18px}
+.preview-minimal{background:#f6f4ef}.preview-minimal .mini-card{background:white;border:1px solid #e6e2da;color:#222;border-radius:3px}
+.preview-brutal{background:#ffe84f}.preview-brutal .mini-card{background:#ff77a8;border:4px solid #111;box-shadow:7px 7px 0 #111;color:#111;border-radius:0}
+.preview-gradient{background:linear-gradient(120deg,#6b5cff,#ff70a6,#52d3ff)}.preview-gradient .mini-card{color:white;background:rgba(20,20,30,.18);border-radius:18px}
+.preview-dark{background:#111827}.preview-dark .mini-card{background:#1f2937;color:#f9fafb;border:1px solid #374151;border-radius:14px}
+.preview-flat{background:#e9f7ef}.preview-flat .mini-card{background:#2fb171;color:white;border-radius:10px;box-shadow:none}
+.preview-neu{background:#e8edf3}.preview-neu .mini-card{background:#e8edf3;color:#334155;border-radius:20px;box-shadow:9px 9px 18px #c7ccd2,-9px -9px 18px #fff}
+.preview-grid{background:#f4f5f7}.preview-grid .mini-card{width:84%;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;background:transparent;padding:0}.preview-grid span{background:#fff;border:1px solid #d9dde4;padding:17px 4px;border-radius:8px;color:#333}
+.preview-editorial{background:#f3efe8}.preview-editorial .mini-card{width:86%;text-align:left;background:transparent;color:#111;padding:8px}.preview-editorial .big{font-family:Georgia,serif;font-size:27px;line-height:1}.preview-editorial .line{height:1px;background:#111;margin:10px 0}.preview-editorial small{font-weight:400}
+.preview-cardui{background:#edf2ff}.preview-cardui .mini-card{width:88%;display:flex;gap:8px;background:transparent;padding:0}.preview-cardui span{flex:1;background:#fff;border-radius:12px;padding:20px 5px;box-shadow:0 5px 16px rgba(0,0,0,.08);color:#3156d3}
+.style-note{font-size:13px;color:#666;margin-top:-6px}
 </style></head><body>
 <header class="hero"><div class="wrap"><h1>AI로 웹사이트 만들 때 알아두면 좋은 디자인 참고자료</h1>
 <p>용어를 외우는 자료가 아닙니다. 원하는 화면을 AI에게 더 정확하게 설명하고 싶을 때 찾아보세요. 한글 설명을 먼저 보고 필요할 때 영어 원어를 참고하면 됩니다.</p></div></header>
-<div class="sticky"><div class="tools"><input id="search" placeholder="예: 답답해, 카드, 스마트폰, 여백" oninput="applyFilters()">
+<div class="sticky"><div class="tools"><input id="search" placeholder="예: 글래스모피즘, 깔끔하게, 카드, 스마트폰, 여백" oninput="applyFilters()">
 <button class="filter active" data-cat="전체" onclick="setCat(this)">전체</button>
 <button class="filter" data-cat="구조" onclick="setCat(this)">화면 구성</button>
 <button class="filter" data-cat="디자인" onclick="setCat(this)">화면 다듬기</button>
+<button class="filter" data-cat="스타일" onclick="setCat(this)">디자인 스타일</button>
 <button class="filter" data-cat="효과" onclick="setCat(this)">효과</button>
 <button class="filter" data-cat="반응형" onclick="setCat(this)">스마트폰 대응</button></div></div>
 <main>
@@ -163,9 +180,110 @@ h2{margin:30px 0 14px;font-size:23px}.term{padding:20px;display:flex;flex-direct
 <p>화면 크기 같은 조건에 따라 다른 CSS 스타일을 적용하는 방법 중 하나입니다.</p>
 <div class="when"><b>이럴 때 찾아보세요</b><br>AI가 반응형 화면을 어떻게 구현했는지 이해할 때</div>
 <div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 기능은 유지하고 작은 화면에서 필요한 부분만 조정해줘. 필요하다면 화면 크기에 따른 CSS 스타일을 적용해줘.</div>
-</article></div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 글래스모피즘 glassmorphism 반투명한 유리판처럼 뒤 배경이 은은하게 비치고 흐려 보이는 스타일입니다. 카드나 팝업을 배경 위에 떠 있는 것처럼 표현할 때 자주 사용합니다. 세련되고 투명한 느낌을 주고 싶을 때 현재 콘텐츠와 기능은 유지하고 카드 영역을 반투명한 유리 느낌의 글래스모피즘 스타일로 바꿔줘. 배경이 은은하게 비치도록 하되 글자는 충분히 잘 읽히게 해줘.">
+<span class="badge">디자인 스타일</span>
+<h3>글래스모피즘</h3><div class="english">Glassmorphism</div>
+<div class="style-preview preview-glass"><div class="mini-card">GLASS<br><small>반투명 + 흐림</small></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>반투명한 유리판처럼 뒤 배경이 은은하게 비치고 흐려 보이는 스타일입니다. 카드나 팝업을 배경 위에 떠 있는 것처럼 표현할 때 자주 사용합니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>세련되고 투명한 느낌을 주고 싶을 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 콘텐츠와 기능은 유지하고 카드 영역을 반투명한 유리 느낌의 글래스모피즘 스타일로 바꿔줘. 배경이 은은하게 비치도록 하되 글자는 충분히 잘 읽히게 해줘.</div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 미니멀 디자인 minimal design 불필요한 장식과 색을 줄이고 핵심 내용, 정돈된 글자, 충분한 여백에 집중하는 스타일입니다. 깔끔하고 차분하게 정리하고 싶을 때 현재 콘텐츠는 유지하고 불필요한 장식과 색상을 줄여줘. 충분한 여백과 명확한 글자 위계를 사용하는 미니멀한 디자인으로 바꿔줘.">
+<span class="badge">디자인 스타일</span>
+<h3>미니멀 디자인</h3><div class="english">Minimal Design</div>
+<div class="style-preview preview-minimal"><div class="mini-card">MINIMAL<br><small>적게 · 명확하게</small></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>불필요한 장식과 색을 줄이고 핵심 내용, 정돈된 글자, 충분한 여백에 집중하는 스타일입니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>깔끔하고 차분하게 정리하고 싶을 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 콘텐츠는 유지하고 불필요한 장식과 색상을 줄여줘. 충분한 여백과 명확한 글자 위계를 사용하는 미니멀한 디자인으로 바꿔줘.</div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 네오 브루탈리즘 neo-brutalism 굵은 테두리, 강한 색, 뚜렷한 그림자처럼 일부러 거칠고 강렬하게 보이도록 하는 스타일입니다. 개성 있고 눈에 확 띄는 화면을 만들고 싶을 때 현재 콘텐츠는 유지하고 굵은 테두리, 강한 색상 대비, 뚜렷한 그림자를 활용한 네오 브루탈리즘 느낌으로 바꿔줘. 읽기 어려울 정도로 과하게 만들지는 마.">
+<span class="badge">디자인 스타일</span>
+<h3>네오 브루탈리즘</h3><div class="english">Neo-Brutalism</div>
+<div class="style-preview preview-brutal"><div class="mini-card">BOLD!<br><small>굵은 선 + 강한 대비</small></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>굵은 테두리, 강한 색, 뚜렷한 그림자처럼 일부러 거칠고 강렬하게 보이도록 하는 스타일입니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>개성 있고 눈에 확 띄는 화면을 만들고 싶을 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 콘텐츠는 유지하고 굵은 테두리, 강한 색상 대비, 뚜렷한 그림자를 활용한 네오 브루탈리즘 느낌으로 바꿔줘. 읽기 어려울 정도로 과하게 만들지는 마.</div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 그라디언트 gradient 한 색에서 다른 색으로 자연스럽게 이어지는 색상 표현입니다. 배경이나 강조 영역에 분위기와 깊이를 줄 수 있습니다. 단색 배경이 밋밋해 보일 때 현재 구조와 콘텐츠는 유지하고 주요 배경에 조화로운 그라디언트를 적용해줘. 글자가 배경에 묻히지 않도록 대비도 함께 확인해줘.">
+<span class="badge">디자인 스타일</span>
+<h3>그라디언트</h3><div class="english">Gradient</div>
+<div class="style-preview preview-gradient"><div class="mini-card">GRADIENT<br><small>색이 자연스럽게 연결</small></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>한 색에서 다른 색으로 자연스럽게 이어지는 색상 표현입니다. 배경이나 강조 영역에 분위기와 깊이를 줄 수 있습니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>단색 배경이 밋밋해 보일 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 구조와 콘텐츠는 유지하고 주요 배경에 조화로운 그라디언트를 적용해줘. 글자가 배경에 묻히지 않도록 대비도 함께 확인해줘.</div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 다크 모드 dark mode 어두운 배경 위에 밝은 글자와 강조색을 사용하는 화면 스타일입니다. 음악·게임·테크처럼 몰입감 있는 분위기를 주고 싶을 때 현재 콘텐츠와 기능은 유지하고 전체 화면을 다크 모드로 바꿔줘. 어두운 배경에서도 제목, 본문, 버튼이 충분히 잘 보이도록 대비를 조정해줘.">
+<span class="badge">디자인 스타일</span>
+<h3>다크 모드</h3><div class="english">Dark Mode</div>
+<div class="style-preview preview-dark"><div class="mini-card">DARK MODE<br><small>어두운 배경 + 밝은 정보</small></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>어두운 배경 위에 밝은 글자와 강조색을 사용하는 화면 스타일입니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>음악·게임·테크처럼 몰입감 있는 분위기를 주고 싶을 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 콘텐츠와 기능은 유지하고 전체 화면을 다크 모드로 바꿔줘. 어두운 배경에서도 제목, 본문, 버튼이 충분히 잘 보이도록 대비를 조정해줘.</div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 플랫 디자인 flat design 입체적인 질감이나 복잡한 그림자를 줄이고 단순한 색과 형태로 정보를 명확하게 보여주는 스타일입니다. 가볍고 단순한 화면이 필요할 때 현재 콘텐츠는 유지하고 복잡한 입체 효과와 과한 그림자를 줄여줘. 단순한 색상과 형태 중심의 플랫 디자인으로 정리해줘.">
+<span class="badge">디자인 스타일</span>
+<h3>플랫 디자인</h3><div class="english">Flat Design</div>
+<div class="style-preview preview-flat"><div class="mini-card">FLAT<br><small>단순한 색 + 형태</small></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>입체적인 질감이나 복잡한 그림자를 줄이고 단순한 색과 형태로 정보를 명확하게 보여주는 스타일입니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>가볍고 단순한 화면이 필요할 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 콘텐츠는 유지하고 복잡한 입체 효과와 과한 그림자를 줄여줘. 단순한 색상과 형태 중심의 플랫 디자인으로 정리해줘.</div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 뉴모피즘 neumorphism 버튼이나 카드가 같은 색의 배경에서 부드럽게 튀어나오거나 눌린 것처럼 보이게 하는 스타일입니다. 부드럽고 입체적인 ui 느낌을 실험하고 싶을 때 현재 콘텐츠는 유지하고 일부 버튼과 카드에 배경에서 부드럽게 튀어나온 듯한 뉴모피즘 느낌을 적용해줘. 글자와 버튼의 구분이 흐려지지 않게 해줘.">
+<span class="badge">디자인 스타일</span>
+<h3>뉴모피즘</h3><div class="english">Neumorphism</div>
+<div class="style-preview preview-neu"><div class="mini-card">SOFT UI<br><small>부드러운 돌출 효과</small></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>버튼이나 카드가 같은 색의 배경에서 부드럽게 튀어나오거나 눌린 것처럼 보이게 하는 스타일입니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>부드럽고 입체적인 UI 느낌을 실험하고 싶을 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 콘텐츠는 유지하고 일부 버튼과 카드에 배경에서 부드럽게 튀어나온 듯한 뉴모피즘 느낌을 적용해줘. 글자와 버튼의 구분이 흐려지지 않게 해줘.</div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 그리드 배치 grid layout 화면을 일정한 칸으로 나누고 카드나 이미지를 규칙적으로 배열하는 방식입니다. 여러 콘텐츠를 한눈에 정돈해서 보여주고 싶을 때 현재 콘텐츠는 유지하고 반복되는 콘텐츠를 일정한 크기의 그리드 형태로 정돈해줘. 화면이 작아지면 열 수가 자연스럽게 줄어들도록 반응형으로 만들어줘.">
+<span class="badge">디자인 스타일</span>
+<h3>그리드 배치</h3><div class="english">Grid Layout</div>
+<div class="style-preview preview-grid"><div class="mini-card"><span>01</span><span>02</span><span>03</span></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>화면을 일정한 칸으로 나누고 카드나 이미지를 규칙적으로 배열하는 방식입니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>여러 콘텐츠를 한눈에 정돈해서 보여주고 싶을 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 콘텐츠는 유지하고 반복되는 콘텐츠를 일정한 크기의 그리드 형태로 정돈해줘. 화면이 작아지면 열 수가 자연스럽게 줄어들도록 반응형으로 만들어줘.</div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 에디토리얼 스타일 editorial style 잡지나 온라인 매거진처럼 큰 제목, 이미지, 다양한 크기의 콘텐츠를 조합해 이야기를 읽는 느낌을 주는 스타일입니다. 문화·음악·여행처럼 콘텐츠 자체를 강조하고 싶을 때 현재 콘텐츠는 유지하고 큰 제목과 이미지, 여백을 활용해 온라인 매거진 같은 에디토리얼 스타일로 구성해줘. 콘텐츠를 읽는 흐름이 자연스럽게 이어지게 해줘.">
+<span class="badge">디자인 스타일</span>
+<h3>에디토리얼 스타일</h3><div class="english">Editorial Style</div>
+<div class="style-preview preview-editorial"><div class="mini-card"><div class="big">POP<br>CULTURE</div><div class="line"></div><small>Music · Artist · Story</small></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>잡지나 온라인 매거진처럼 큰 제목, 이미지, 다양한 크기의 콘텐츠를 조합해 이야기를 읽는 느낌을 주는 스타일입니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>문화·음악·여행처럼 콘텐츠 자체를 강조하고 싶을 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 콘텐츠는 유지하고 큰 제목과 이미지, 여백을 활용해 온라인 매거진 같은 에디토리얼 스타일로 구성해줘. 콘텐츠를 읽는 흐름이 자연스럽게 이어지게 해줘.</div>
+</article>
+<article class="term" data-cat="스타일" data-search="스타일 카드형 디자인 card ui 관련된 정보를 하나의 상자 단위로 묶어 여러 콘텐츠를 비교하거나 훑어보기 쉽게 만드는 방식입니다. 아티스트·장르·상품·게시물처럼 반복되는 정보를 보여줄 때 현재 콘텐츠는 유지하고 반복되는 정보를 카드 형태로 나눠줘. 카드마다 제목과 설명이 쉽게 구분되고 카드 사이 간격도 일정하게 만들어줘.">
+<span class="badge">디자인 스타일</span>
+<h3>카드형 디자인</h3><div class="english">Card UI</div>
+<div class="style-preview preview-cardui"><div class="mini-card"><span>K-POP</span><span>US POP</span><span>LATIN</span></div></div>
+<div class="style-note">※ 실제 사이트가 아니라 스타일 특징을 단순화한 미니 예시입니다.</div>
+<p>관련된 정보를 하나의 상자 단위로 묶어 여러 콘텐츠를 비교하거나 훑어보기 쉽게 만드는 방식입니다.</p>
+<div class="when"><b>이럴 때 찾아보세요</b><br>아티스트·장르·상품·게시물처럼 반복되는 정보를 보여줄 때</div>
+<div class="prompt"><button class="copy" onclick="copyPrompt(this)">프롬프트 복사</button>현재 콘텐츠는 유지하고 반복되는 정보를 카드 형태로 나눠줘. 카드마다 제목과 설명이 쉽게 구분되고 카드 사이 간격도 일정하게 만들어줘.</div>
+</article>
+</div>
 <div class="tip"><b>용어를 몰라도 괜찮습니다.</b><br>
 “첫 화면 제목을 더 크게”, “카드 사이를 넓게”, “스마트폰에서 한 줄로”, “글자가 배경에 묻히지 않게”처럼 평범한 한국어로도 충분히 요청할 수 있습니다. 이 자료의 용어는 더 정확하게 설명하고 싶을 때 꺼내 쓰는 참고어입니다.</div>
+
+<section class="intro" style="margin-top:24px">
+<strong>🎧 3회차 세계 POP 웹사이트 실습에서 참고할 사이트</strong>
+<p><b>Nemoz</b> — K-POP·음악 콘텐츠와 연결해 화면의 구성 원칙을 관찰하기 좋은 참고 사이트입니다.</p>
+<p><a href="https://nemoz.io/" target="_blank" rel="noopener">Nemoz 사이트 열기 →</a></p>
+<p><b>무엇을 볼까요?</b><br>
+첫 화면에서 무엇이 먼저 보이는지 · 콘텐츠를 어떻게 영역별로 나누는지 · 이미지와 설명을 어떻게 배치하는지 · 카드 사이의 정렬과 여백이 어떤지 살펴보세요.</p>
+<div class="tip"><b>참고 ≠ 복제</b><br>문구, 이미지, 로고를 가져오는 것이 아니라 배치·강조·영역 구분·여백 같은 <b>구성 원칙</b>을 찾아 내 웹사이트에 적용합니다.</div>
+</section>
+
 <div class="footer">AI 바이브코딩 3회차 · 수강생용 웹디자인 참고자료</div></main>
 <script>
 let currentCat="전체";
