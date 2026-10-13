@@ -389,6 +389,24 @@
             }
         };
 
+        // Firestore 회원 등급에 맞춰 버튼 및 관리자 메뉴 갱신
+        function applyMemberPermissions() {
+            const role = currentUserProfile?.role;
+            const isAdmin = role === "admin";
+            const canDownload = role === "approved" || isAdmin;
+            document.getElementById("admin-gear-btn").classList.toggle("hidden", !isAdmin);
+            document.getElementById("pdf-download-btn").classList.toggle("hidden", !canDownload);
+            document.getElementById("pdf-pending-notice").classList.toggle("hidden", role !== "member");
+            if (!isAdmin) {
+                document.getElementById("admin-section").classList.add("hidden");
+                if (role) document.getElementById("main-section").classList.remove("hidden");
+            }
+            if (currentUserProfile) {
+                document.getElementById("user-display-name").innerText = currentUserProfile.name || "회원";
+                document.getElementById("user-role-badge").innerText = role || "member";
+            }
+        }
+
         onAuthStateChanged(auth, async (user) => {
             const generation = ++authGeneration;
             if (unsubscribeProfile) { unsubscribeProfile(); unsubscribeProfile = null; }
