@@ -302,7 +302,7 @@
         // [설정 2] Supabase Edge Function URL 설정
         // ⚠️ 아래 URL의 '본인프로젝트' 부분을 실제 Supabase 프로젝트 ID로 수정해 주세요.
         // =========================================================================
-        const SUPABASE_EDGE_FUNCTION_URL = "https://lwrthfzhhnltaubfmkdm.supabase.co/functions/v1/class-pdf-download";
+        const SUPABASE_EDGE_FUNCTION_URL = "https://lwrtfhzhhnltaubfmkdm.supabase.co/functions/v1/class-pdf-download";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -331,15 +331,13 @@
         };
 
         // =========================================================================
-        // 수업 당일 임시 PDF 제공: GitHub Pages 공개 파일
-        // 주의: 화면 버튼은 승인 회원에게만 보이지만 PDF URL 자체는 공개됨.
-        // 기존 Supabase Edge Function 설정은 추후 복구를 위해 유지함.
+        // 수업자료 PDF 다운로드: Supabase Edge Function 경유 (승인 회원/관리자만)
+        // 서버가 Firebase 토큰과 Firestore role을 직접 확인한 뒤 60초짜리 서명 URL을 줌
         // =========================================================================
-        const CLASS_PDF_PUBLIC_URL = "https://eunhacheol88-png.github.io/vibe/7class.pdf";
-
-        window.downloadClassPDF = function() {
+        window.downloadClassPDF = async function() {
             hideError();
-            if (!auth.currentUser) {
+            const user = auth.currentUser;
+            if (!user) {
                 showError("PDF 다운로드는 로그인 후 이용할 수 있습니다.");
                 return;
             }
@@ -347,36 +345,43 @@
                 showError("관리자 승인 후 PDF를 다운로드할 수 있습니다.");
                 return;
             }
-            // 브라우저의 파일 열기 기능을 사용하므로 Supabase DNS 장애와 무관함.
-            // GitHub Pages에 7class.pdf가 업로드되어 있어야 함.
-            const link = document.createElement("a");
-            link.href = CLASS_PDF_PUBLIC_URL;
-            link.target = "_blank";
-            link.rel = "noopener noreferrer";
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
+            const btn = document.getElementById("pdf-download-btn");
+            btn.disabled = true;
+            try {
+                const idToken = await user.getIdToken(true); // 최신 토큰으로 갱신
+                let res;
+                try {
+                    res = await fetch(SUPABASE_EDGE_FUNCTION_URL, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "Bearer " + idToken,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ fileName: "7class.pdf" })
+                    });
+                } catch (netErr) {
+                    // 서버가 CORS 응답을 못 줬거나(JWT 검증 켜짐 등) 함수에 아예 닿지 못한 경우
+                    throw new Error("서버에 연결하지 못했습니다 (Edge Function의 JWT 검증 설정/배포 상태 확인)");
+                }
+                const data = await res.json().catch(() => ({}));
+                const fileUrl = data.url || data.signedUrl || data.signedURL;
+                if (!res.ok || !fileUrl) {
+                    throw new Error(data.error || data.msg || data.message || ("서버 응답 " + res.status));
+                }
+                const link = document.createElement("a");
+                link.href = fileUrl;
+                link.download = "7class.pdf";
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            } catch (err) {
+                console.error(err);
+                showError("PDF 다운로드 실패: " + err.message);
+            } finally {
+                btn.disabled = false;
+            }
         };
 
-        // Firestore 회원 등급에 맞춰 버튼 및 관리자 메뉴 갱신
-        function applyMemberPermissions() {
-            const role = currentUserProfile?.role;
-            const isAdmin = role === "admin";
-            const canDownload = role === "approved" || isAdmin;
-            document.getElementById("admin-gear-btn").classList.toggle("hidden", !isAdmin);
-            document.getElementById("pdf-download-btn").classList.toggle("hidden", !canDownload);
-            document.getElementById("pdf-pending-notice").classList.toggle("hidden", role !== "member");
-            if (!isAdmin) {
-                document.getElementById("admin-section").classList.add("hidden");
-                if (role) document.getElementById("main-section").classList.remove("hidden");
-            }
-            if (currentUserProfile) {
-                document.getElementById("user-display-name").innerText = currentUserProfile.name || "회원";
-                document.getElementById("user-role-badge").innerText = role || "member";
-            }
-        }
-
-        // 로그인 변경 시 이전 구독 정리
         onAuthStateChanged(auth, async (user) => {
             const generation = ++authGeneration;
             if (unsubscribeProfile) { unsubscribeProfile(); unsubscribeProfile = null; }
