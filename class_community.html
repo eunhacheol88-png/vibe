@@ -368,12 +368,19 @@
                 if (!res.ok || !fileUrl) {
                     throw new Error(data.error || data.msg || data.message || ("서버 응답 " + res.status));
                 }
+                // 서명 URL을 화면에 열지 않고 파일 내용만 받아서 저장
+                // (주소창이나 새 탭에 Supabase 주소가 나타나지 않음)
+                const fileRes = await fetch(fileUrl);
+                if (!fileRes.ok) throw new Error("파일 받기 실패 (" + fileRes.status + ")");
+                const blob = await fileRes.blob();
+                const blobUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
-                link.href = fileUrl;
+                link.href = blobUrl;
                 link.download = "7class.pdf";
                 document.body.appendChild(link);
                 link.click();
                 link.remove();
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
             } catch (err) {
                 console.error(err);
                 showError("PDF 다운로드 실패: " + err.message);
