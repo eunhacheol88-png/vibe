@@ -1,0 +1,4144 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>GAS 업무자동화 심화 실습 STEP 1~14 - 수강생용</title>
+<style>
+:root{
+  --ink:#1f2937; --muted:#667085; --brand:#2f806f; --brand2:#e8f4f0;
+  --line:#d9e2df; --warn:#fff6dd; --danger:#fff1f0; --info:#f4f7fb;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Arial,sans-serif;color:var(--ink);background:#f7f9f8;line-height:1.75}
+.wrap{max-width:1040px;margin:0 auto;background:white;min-height:100vh;padding:40px 46px 80px}
+h1{font-size:34px;line-height:1.25;margin:0 0 10px}
+h2{font-size:27px;margin:46px 0 14px;border-bottom:3px solid var(--brand);padding-bottom:8px}
+h3{font-size:21px;margin:30px 0 10px}
+h4{font-size:17px;margin:24px 0 8px}
+p{margin:8px 0}
+.lead{font-size:18px;color:#344054}
+.badge{display:inline-block;background:var(--brand2);color:#165f51;border-radius:999px;padding:5px 10px;font-weight:700;font-size:13px;margin-right:6px}
+.box{padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--info);margin:14px 0}
+.tip{background:#edf8f4;border-left:5px solid var(--brand)}
+.warn{background:var(--warn);border-left:5px solid #e3a008}
+.danger{background:var(--danger);border-left:5px solid #d92d20}
+.step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:18px 0}
+pre{background:#111827;color:#f9fafb;border-radius:12px;padding:16px;overflow:auto;line-height:1.55;font-size:13px}
+code{font-family:Consolas,Monaco,"Courier New",monospace}
+table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:14px}
+th,td{border:1px solid #d8dfdc;padding:9px 10px;text-align:left;vertical-align:top}
+th{background:#edf5f2}
+ol,ul{padding-left:24px}
+.check{font-size:16px}
+.small{font-size:13px;color:var(--muted)}
+.flow{font-family:Consolas,monospace;background:#f7faf9;border:1px dashed #9db9b0;border-radius:10px;padding:14px;text-align:center;font-weight:700}
+.teacher{background:#fff3e8;border-left:5px solid #f79009}
+.pagebreak{page-break-before:always}
+@media print{
+  body{background:white}
+  .wrap{max-width:none;padding:18mm}
+  pre{white-space:pre-wrap;word-break:break-word}
+}
+
+.theory-section{margin-top:42px;padding-top:16px;border-top:5px solid #355E3B}.theory-section h3{margin-top:28px;border-left:5px solid #355E3B;padding-left:12px}.theory-section p{line-height:1.8}.theory-section table{margin:12px 0 20px}.theory-section .box{line-height:1.75}@media print{.theory-section h3{break-after:avoid}.theory-section .box{break-inside:avoid}}
+</style>
+<style>
+.action{margin:14px 0;padding:14px 16px;border-radius:12px;font-weight:700}
+.run{background:#eaf7ee;border-left:6px solid #18864b}
+.no-run{background:#fff0f0;border-left:6px solid #d92d20}
+.refresh{background:#eef4ff;border-left:6px solid #3b67d9}
+.setting{background:#fff7df;border-left:6px solid #d99a00}
+.permission{background:#f4efff;border-left:6px solid #7c4dcc}
+.checkfast{background:#f7faf9;border:2px dashed #2f806f;padding:16px;border-radius:12px;margin:16px 0}
+</style>
+<style>
+.codebox-wrap{position:relative;margin:16px 0}
+.codecopy-btn{position:absolute;right:10px;top:10px;z-index:5;border:0;border-radius:8px;padding:8px 12px;background:#fff;color:#111827;font-weight:700;cursor:pointer;box-shadow:0 1px 6px rgba(0,0,0,.22)}
+.codecopy-btn:hover{transform:translateY(-1px)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<span class="badge">수강생용</span>
+<span class="badge">STEP 1~14</span>
+<h1>Google Apps Script 사회복지 업무자동화 | 이론 + STEP 1~14</h1>
+<div class="box tip">
+<b>실습 진행 방식 안내</b><br/>
+STEP 1에서 만든 <b>하나의 구글 스프레드시트와 하나의 Apps Script 프로젝트</b>를 계속 이어서 사용합니다.<br/>
+STEP 6의 성능 비교 실습만 같은 스프레드시트 안에 <b>성능테스트</b>라는 별도 시트 탭을 만들어 사용합니다.<br/>
+그 외 단계는 계속 <b>프로그램운영관리</b> 시트를 중심으로 기능을 하나씩 추가합니다.
+</div>
+<p class="lead">사회복지 프로그램 운영관리 시트를 활용해 기능을 직접 체험하고, 구글시트를 업무 프로그램처럼 확장합니다.</p>
+<div class="box tip">
+<b>실습 방식</b><br/>
+    먼저 완성 코드를 복사하여 기능을 직접 체험합니다. 기능의 이름과 역할을 이해한 뒤, 같은 기능을 생성형 AI에게 프롬프트로 다시 요청하는 방식으로 반복합니다.
+  </div>
+<h2>실습에 사용할 기본 시트</h2>
+<div class="box tip">
+<b>실습용 구글시트 바로가기</b><br/>
+<a href="https://docs.google.com/spreadsheets/d/1mMKkWkq3BB5HpitCq8ZbUQCMPyn_6jgYUmLgnprAENs/edit?usp=drivesdk" rel="noopener noreferrer" target="_blank">
+      사회복지_프로그램운영관리_심화실습 열기
+    </a>
+</div>
+<p>파일명: <b>사회복지_프로그램운영관리_심화실습</b><br/>
+  시트 탭 이름: <b>프로그램운영관리</b></p>
+<table><thead><tr><th>접수번호</th><th>이용자명</th><th>프로그램명</th><th>신청일</th><th>담당자</th><th>상태</th><th>상담일</th><th>완료일</th><th>비고</th><th>파일링크</th></tr></thead><tbody><tr><td>P001</td><td>이용자001</td><td>스마트폰 활용교육</td><td>2026-10-01</td><td>박지현</td><td>진행중</td><td>2026-10-20</td><td></td><td>초기상담 완료</td><td></td></tr><tr><td>P002</td><td>이용자002</td><td>건강증진 프로그램</td><td>2026-10-02</td><td>김민수</td><td>대기</td><td></td><td></td><td>일정 조율 중</td><td></td></tr><tr><td>P003</td><td>이용자003</td><td>가족지원 프로그램</td><td>2026-10-03</td><td>최서연</td><td>완료</td><td>2026-10-08</td><td>2026-10-08</td><td>참여 완료</td><td></td></tr><tr><td>P004</td><td>이용자004</td><td>스마트폰 활용교육</td><td>2026-10-05</td><td>박지현</td><td>진행중</td><td>2026-10-22</td><td></td><td>2회차 예정</td><td></td></tr><tr><td>P005</td><td>이용자005</td><td>건강증진 프로그램</td><td>2026-10-06</td><td>김민수</td><td>대기</td><td></td><td></td><td>신청서 확인 필요</td><td></td></tr><tr><td>P006</td><td>이용자006</td><td>가족지원 프로그램</td><td>2026-10-07</td><td>최서연</td><td>보류</td><td>2026-10-24</td><td></td><td>보호자 일정 확인 중</td><td></td></tr><tr><td>P007</td><td>이용자007</td><td>스마트폰 활용교육</td><td>2026-10-08</td><td>박지현</td><td>완료</td><td>2026-10-15</td><td>2026-10-15</td><td>참여 확인서 필요</td><td></td></tr><tr><td>P008</td><td>이용자008</td><td>건강증진 프로그램</td><td>2026-10-09</td><td>김민수</td><td>진행중</td><td>2026-10-25</td><td></td><td>상담 후 참여 결정</td><td></td></tr><tr><td>P009</td><td>이용자009</td><td>가족지원 프로그램</td><td>2026-10-10</td><td>최서연</td><td>대기</td><td></td><td></td><td>추가 서류 미제출</td><td></td></tr><tr><td>P010</td><td>이용자010</td><td>스마트폰 활용교육</td><td>2026-10-11</td><td>박지현</td><td>진행중</td><td>2026-10-28</td><td></td><td>교재 준비 필요</td><td></td></tr><tr><td>P011</td><td>이용자011</td><td>건강증진 프로그램</td><td>2026-10-12</td><td>김민수</td><td>완료</td><td>2026-10-14</td><td>2026-10-14</td><td>만족도 조사 완료</td><td></td></tr><tr><td>P012</td><td>이용자012</td><td>가족지원 프로그램</td><td>2026-10-13</td><td>최서연</td><td>보류</td><td></td><td></td><td>상담 일정 재조정</td><td></td></tr></tbody></table>
+<p class="small">※ 실제 개인정보 대신 가상의 이용자 정보를 사용합니다.</p>
+<div class="theory-section"><h2>PART A. 핵심 이론 교안 — 실습 전에 이해할 내용</h2><div class="box tip">학습 목표: 사회복지 업무를 데이터·화면·서버·자동 실행으로 나누어 이해하고, AI와 협업해 기존 시스템을 안전하게 발전시키는 방법을 익힙니다. 빠른 실습보다는 원리와 구조를 중심으로 학습합니다.</div><div class="box tip"><b>이론 목차</b><p>01. 업무자동화와 Google Apps Script의 개념 / 02. 독립형과 컨테이너 바인딩형 / 03. 프로젝트의 구성요소: Code.gs, HTML, 시트, 속성 / 04. JavaScript 핵심 문법과 함수 / 05. Sheets 객체 계층과 범위·열 번호 / 06. 사용자 인터페이스: 메뉴·Alert·Prompt·Toast·Modal·Sidebar / 07. 트리거·이벤트 객체·자동 실행의 한계 / 08. HTML과 Code.gs의 통신 / 09. 데이터 모델과 상태 관리 / 10. 운영 현황 집계와 성능: 반복 호출 vs 일괄 처리 / 11. Script Properties와 Drive·Docs·PDF·Calendar·Gmail 연결 / 12. 웹앱 배포와 컨테이너 바인딩의 차이 / 13. AI와 함께 코드 분석·수정하기 / 14. 전체 STEP 1~14 학습 경로와 응용</p></div><h3 id="theory-01">THEORY 01. 업무자동화와 Google Apps Script의 개념</h3><div class="box tip"><b>핵심 개념</b><br/>Apps Script는 Google의 클라우드에서 실행되는 JavaScript 기반 자동화 플랫폼입니다. Sheets·Docs·Forms·Drive·Calendar·Gmail 등의 서비스 간 데이터 이동과 업무 규칙을 코드로 연결합니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>사회복지 프로그램에서는 접수→상담→진행→완료→후속확인 흐름이 반복됩니다. 입력 데이터와 처리 규칙을 분리해야 같은 작업을 여러 담당자가 일관되게 수행할 수 있습니다.</div><p><b>핵심 정리:</b> 업무자동화와 Google Apps Script의 개념을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-02">THEORY 02. 독립형과 컨테이너 바인딩형</h3><div class="box tip"><b>핵심 개념</b><br/>독립형(Standalone)은 script.google.com에서 별도 프로젝트로 만듭니다. 특정 문서의 편집기에 연결되지 않으며 openById() 등으로 명시적으로 문서를 엽니다. 컨테이너 바인딩형(Container-bound)은 Sheets의 ‘확장 프로그램 → Apps Script’ 등에서 만들며 해당 파일과 연결됩니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>컨테이너 바인딩형은 getActiveSpreadsheet(), onOpen()을 이용한 메뉴, 시트 안의 모달·사이드바 활용에 알맞습니다. 독립형도 설치형 트리거와 여러 서비스 연동이 가능하며, 컨테이너 바인딩형도 다른 파일 ID로 접근할 수 있습니다. 웹앱은 프로젝트 연결 유형과 다른 ‘배포 방식’이므로 독립형과 동의어가 아닙니다.</div><table><thead><tr><th>항목</th><th>독립형</th><th>컨테이너 바인딩형</th></tr></thead><tbody><tr><td>만드는 곳</td><td>script.google.com</td><td>Sheets 등 확장 프로그램 → Apps Script</td></tr><tr><td>파일 연결</td><td>특정 편집기 문서에 직접 연결되지 않음</td><td>특정 문서에 연결됨</td></tr><tr><td>대상 파일 접근</td><td>openById() 등 명시적 접근</td><td>getActiveSpreadsheet() 또는 openById()</td></tr><tr><td>현재 파일의 메뉴·사이드바</td><td>직접 표시 용도로 부적합</td><td>표시 가능</td></tr><tr><td>시간 기반 실행</td><td>가능</td><td>가능</td></tr><tr><td>웹앱 배포</td><td>가능</td><td>가능</td></tr><tr><td>이 수업의 주 용도</td><td>여러 파일 통합 자동화 비교</td><td>운영관리 시트와 업무 패널</td></tr></tbody></table><p><b>핵심 정리:</b> 독립형과 컨테이너 바인딩형을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-03">THEORY 03. 프로젝트의 구성요소: Code.gs, HTML, 시트, 속성</h3><div class="box tip"><b>핵심 개념</b><br/>Code.gs는 데이터 처리와 서버 함수, Sidebar.html은 입력·결과 표시, Guide.html은 안내 대화상자, Google Sheets는 데이터 저장소입니다. Script Properties는 SPREADSHEET_ID, FOLDER_ID 같은 설정값을 프로젝트 수준에서 보관합니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>Script Properties는 암호를 자동으로 안전하게 만드는 비밀 관리 시스템이 아닙니다. 편집 권한과 노출 경로를 관리해야 합니다. 이용자 이름, 상담 내용 등 개인정보는 수업에서 가상 데이터만 사용합니다.</div><p><b>핵심 정리:</b> 프로젝트의 구성요소: Code.gs, HTML, 시트, 속성을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-04">THEORY 04. JavaScript 핵심 문법과 함수</h3><div class="box tip"><b>핵심 개념</b><br/>const는 재할당하지 않는 변수 선언, let은 값 변경 가능한 변수 선언입니다. function은 반복 사용할 동작에 이름을 붙인 것이고 매개변수는 함수에 전달되는 입력값입니다. if는 조건 분기, return은 결과 반환, try/catch는 예외 처리에 사용합니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>예: saveProgramData(formData)는 폼에서 전달받은 객체의 clientName·programName·manager 값을 검사한 뒤 신규 행을 기록하고 접수번호를 반환합니다. console.log는 흐름 확인, console.error는 오류 파악에 사용합니다.</div><p><b>핵심 정리:</b> JavaScript 핵심 문법과 함수을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-05">THEORY 05. Sheets 객체 계층과 범위·열 번호</h3><div class="box tip"><b>핵심 개념</b><br/>SpreadsheetApp → Spreadsheet → Sheet → Range 순서로 접근합니다. getSheetByName('프로그램운영관리')은 탭을 선택하고 getRange(row, column)은 특정 셀을 가리킵니다. A열=1, F열=6, H열=8, J열=10입니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>getValues()는 2차원 배열을 반환합니다. 조회를 반복해 호출하면 느려질 수 있으므로 여러 행을 읽을 때 묶어서 읽고 setValues()로 한 번에 쓰는 방식이 유리합니다.</div><pre><code>const ss = SpreadsheetApp.getActiveSpreadsheet();
+const sheet = ss.getSheetByName("프로그램운영관리");
+const status = sheet.getRange(2, 6).getValue(); // F2</code></pre><p><b>핵심 정리:</b> Sheets 객체 계층과 범위·열 번호을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-06">THEORY 06. 사용자 인터페이스: 메뉴·Alert·Prompt·Toast·Modal·Sidebar</h3><div class="box tip"><b>핵심 개념</b><br/>onOpen()으로 시트의 사용자 메뉴를 만들 수 있습니다. alert()는 선택이 있는 알림창, prompt()는 짧은 입력창, toast()는 잠깐 나타나는 상태 메시지입니다. showModalDialog()는 모달 안내창, showSidebar()는 오른쪽 업무 패널을 엽니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>현재 메뉴에는 안내 메시지, 담당자 입력, 작업 완료 알림, 업무 안내창, 업무 패널, 선택 이용자 폴더 생성이 연결되어 있습니다. showManagerPrompt()는 입력값을 화면에 알릴 뿐 담당자 열을 실제 수정하지 않습니다.</div><p><b>핵심 정리:</b> 사용자 인터페이스: 메뉴·Alert·Prompt·Toast·Modal·Sidebar을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-07">THEORY 07. 트리거·이벤트 객체·자동 실행의 한계</h3><div class="box tip"><b>핵심 개념</b><br/>트리거는 사건을 감지해 함수를 실행합니다. 단순 트리거 onOpen(e)는 파일 열기, onEdit(e)는 사용자의 직접 셀 편집에 반응합니다. e.range를 통해 변경 위치를 파악합니다. 설치형 트리거는 승인된 권한으로 시간 기반 실행 등 확대된 자동화에 활용합니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>현재 onEdit(e)는 프로그램운영관리 시트의 F열을 한 셀씩 직접 수정하고 그 값이 완료일 때 H열이 비어 있으면 날짜를 입력합니다. Apps Script가 appendRow()로 쓴 변경은 일반적인 onEdit 트리거를 다시 발생시키지 않습니다. Gmail·Calendar에 권한이 필요한 동작을 단순 트리거에서 바로 실행하도록 설계하면 제약이 생깁니다.</div><p><b>핵심 정리:</b> 트리거·이벤트 객체·자동 실행의 한계을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-08">THEORY 08. HTML과 Code.gs의 통신</h3><div class="box tip"><b>핵심 개념</b><br/>HTML의 버튼 onclick은 브라우저의 JavaScript 함수를 실행합니다. google.script.run.saveProgramData(formData)는 Apps Script 서버 함수를 비동기로 요청합니다. withSuccessHandler는 성공 결과, withFailureHandler는 실패 원인을 화면에 보여줍니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>Sidebar.html의 saveData()는 입력 검증→formData 구성→서버 저장 요청→접수번호 안내 순서입니다. loadProgramStatus()는 서버의 checkProgramStatus()를 실행한 뒤 total/waiting/progressing/completed/paused를 화면에 보여줍니다. Guide.html은 host.close()로 안내창을 닫습니다.</div><pre><code>// Sidebar.html → Code.gs 비동기 호출
+google.script.run
+  .withSuccessHandler(function(id) { console.log(id); })
+  .withFailureHandler(function(err) { console.error(err.message); })
+  .saveProgramData(formData);</code></pre><p><b>핵심 정리:</b> HTML과 Code.gs의 통신을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-09">THEORY 09. 데이터 모델과 상태 관리</h3><div class="box tip"><b>핵심 개념</b><br/>프로그램운영관리의 열은 A 접수번호, B 이용자명, C 프로그램명, D 신청일, E 담당자, F 상태, G 상담일, H 완료일, I 비고, J 파일링크, K 후속확인, L 담당자이메일, M 캘린더이벤트ID, N 메일발송일입니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>상태는 대기·진행중·완료·보류이고 신규 저장은 가장 큰 P번호 다음 번호를 붙입니다. 동시 저장 시 번호 충돌 가능성이 있어 운영환경에서는 잠금(LockService) 같은 동시성 제어를 고려합니다. 완료 후 상태를 되돌려도 기존 H열 완료일은 현재 onEdit 코드가 지우지 않습니다.</div><table><tr><th>A~E</th><td>접수번호, 이용자명, 프로그램명, 신청일, 담당자</td></tr><tr><th>F~J</th><td>상태, 상담일, 완료일, 비고, 파일링크</td></tr><tr><th>K~N</th><td>후속확인, 담당자이메일, 캘린더이벤트ID, 메일발송일</td></tr></table><p><b>핵심 정리:</b> 데이터 모델과 상태 관리을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-10">THEORY 10. 운영 현황 집계와 성능: 반복 호출 vs 일괄 처리</h3><div class="box tip"><b>핵심 개념</b><br/>checkProgramStatus()는 접수번호가 있는 행을 대상으로 전체·대기·진행중·완료·보류 건수를 집계합니다. createPerformanceTestData()는 500개 테스트 행을 만들고 processOneByOne()과 processInBatch()는 셀 단위 처리와 배열 기반 일괄 처리를 비교합니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>처리 횟수가 늘수록 시트 API 왕복 비용이 누적됩니다. getValues()로 한번 읽고 배열에서 계산한 뒤 setValues()로 쓰는 패턴이 중요합니다. 현재 성능테스트 시트는 운영 데이터와 분리되어 있으며 재생성 시 기존 테스트 데이터가 초기화됩니다.</div><p><b>핵심 정리:</b> 운영 현황 집계와 성능: 반복 호출 vs 일괄 처리을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-11">THEORY 11. Script Properties와 Drive·Docs·PDF·Calendar·Gmail 연결</h3><div class="box tip"><b>핵심 개념</b><br/>Script Properties의 SPREADSHEET_ID로 집계 대상 시트를 열고 FOLDER_ID로 상위 Drive 폴더를 찾습니다. 선택한 행의 접수번호·이용자명·프로그램명으로 폴더를 만든 뒤 J열에 URL을 저장합니다. 운영 현황을 새 시트로 만들고 PDF로 저장하거나 Calendar에 상담 이벤트를 넣고 Gmail로 담당자에게 통지하는 것은 여러 서비스의 연동 사례입니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>현재 대화에 제공된 코드에서는 Drive와 보고서 함수가 확인되지만 PDF 저장·Calendar 등록·Gmail 발송 함수의 본문은 확인되지 않았습니다. 해당 STEP은 기존 교안의 학습 단계로 다루되, 확인되지 않은 실제 함수 이름이나 구현을 임의로 단정하지 않습니다. Calendar 이벤트 ID와 메일 발송일은 M·N열에 기록하는 설계 목적을 설명합니다.</div><p><b>핵심 정리:</b> Script Properties와 Drive·Docs·PDF·Calendar·Gmail 연결을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-12">THEORY 12. 웹앱 배포와 컨테이너 바인딩의 차이</h3><div class="box tip"><b>핵심 개념</b><br/>웹앱은 Apps Script 프로젝트를 URL을 통해 접근하도록 배포한 실행 형태입니다. doGet(e)에서 HTML 페이지를 반환하고 사용자가 접속합니다. 웹앱 배포는 독립형/컨테이너 바인딩형 중 어느 하나와 같은 말이 아닙니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>스프레드시트에서 선택된 행을 사용하는 기능은 웹앱 화면에 그대로 옮기기 어렵습니다. 웹앱에서는 명시적 접수번호나 행 식별자를 전달하는 구조가 적합합니다. /exec는 배포한 버전에 연결되므로 수정 사항을 반영하려면 기존 배포를 새 버전으로 업데이트해야 할 수 있습니다.</div><p><b>핵심 정리:</b> 웹앱 배포와 컨테이너 바인딩의 차이을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-13">THEORY 13. AI와 함께 코드 분석·수정하기</h3><div class="box tip"><b>핵심 개념</b><br/>AI에게 요청할 때는 프로젝트 유형, 시트 열 구조, 현재 정상 동작, 수정할 기능, 변경 금지 범위, 오류 메시지, 원하는 출력 형식을 전달합니다. 먼저 함수 역할·호출 관계·의존성을 분석하게 하고 그다음 제한된 범위만 수정합니다.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>함수 한 개 수정이 메뉴·HTML·트리거·보고서에 미치는 영향을 확인해야 합니다. 정상 작동하는 코드를 보존하고 수정 전 사본과 버전을 관리합니다. 가상 이용자 정보만 사용하며 AI에 주민등록번호·연락처·상담 원문을 넣지 않습니다.</div><p><b>핵심 정리:</b> AI와 함께 코드 분석·수정하기을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p><h3 id="theory-14">THEORY 14. 전체 STEP 1~14 학습 경로와 응용</h3><div class="box tip"><b>핵심 개념</b><br/>1. 독립형·컨테이너형 2. 메뉴와 UI 3. Sidebar 저장 4. 트리거·로그 5. 현황 집계 6. 개별·배치 성능 7. Script Properties 8. Drive 폴더 9. 서식·유효성 검사 10. 요약 보고서 11. PDF 12. Calendar·Gmail 13. 웹앱 통합 14. 개인별 업무도구 재설계.</div><div class="box tip"><b>사회복지 운영관리 시스템에 적용</b><br/>학습 목표는 코드를 암기하는 것이 아니라 업무 절차를 입력·처리·기록·출력으로 구조화하고, AI에게 요구사항을 전달하여 기존 기능을 손상하지 않으면서 개선하는 것입니다. 개인별 결과물 예시는 상담확인서·자원봉사 관리·후원물품 관리·만족도 조사 등입니다.</div><p><b>핵심 정리:</b> 전체 STEP 1~14 학습 경로와 응용을(를) 현재 운영관리 시스템의 데이터 흐름과 연결해서 이해합니다.</p></div><h2>STEP 1. 독립형과 컨테이너형 체험</h2>
+<div class="action run">✅ 실행 ▶ 사용: createSocialWorkSheet()를 직접 실행합니다. 새로고침은 필요 없습니다.</div><h3>1-1. 독립형 Apps Script 5분 체험</h3>
+<div class="step">
+<b>목표</b><br/>
+    특정 구글시트에 붙어 있지 않은 Apps Script가 새 스프레드시트를 직접 생성하는 과정을 체험합니다.
+  </div>
+<ol>
+<li>브라우저에서 <b>script.google.com</b>에 접속합니다.</li>
+<li><b>새 프로젝트</b>를 만듭니다.</li>
+<li>기존 코드를 모두 지우고 아래 코드를 붙여넣습니다.</li>
+<li>상단의 <b>저장</b> 버튼을 누릅니다.</li>
+<li>실행할 함수에서 <b>createSocialWorkSheet</b>를 선택하고 <b>실행</b>합니다.</li>
+<li>처음 실행이라면 권한 승인 화면이 나타납니다. 안내에 따라 승인합니다.</li>
+<li>실행 기록에서 생성된 스프레드시트 주소를 확인합니다.</li>
+</ol>
+<pre><code class="language-javascript">function createSocialWorkSheet() {
+
+  const ss = SpreadsheetApp.create('사회복지 프로그램 운영관리_연습');
+
+  const sheet = ss.getActiveSheet();
+  sheet.setName('프로그램운영관리');
+
+  const headers = [
+    '접수번호',
+    '이용자명',
+    '프로그램명',
+    '신청일',
+    '담당자',
+    '상태',
+    '상담일',
+    '완료일',
+    '비고'
+  ];
+
+  sheet.getRange(1, 1, 1, headers.length)
+       .setValues([headers]);
+
+  const data = [
+    ['P001', '이용자001', '스마트폰 활용교육', '2026-10-01', '박지현', '진행중', '2026-10-20', '', '초기상담 완료'],
+    ['P002', '이용자002', '건강증진 프로그램', '2026-10-02', '김민수', '대기', '', '', '일정 조율 중'],
+    ['P003', '이용자003', '가족지원 프로그램', '2026-10-03', '최서연', '완료', '2026-10-08', '2026-10-08', '참여 완료']
+  ];
+
+  sheet.getRange(2, 1, data.length, headers.length)
+       .setValues(data);
+
+  sheet.setFrozenRows(1);
+
+  sheet.getRange(1, 1, 1, headers.length)
+       .setFontWeight('bold')
+       .setBackground('#2F806F')
+       .setFontColor('#FFFFFF')
+       .setHorizontalAlignment('center');
+
+  sheet.autoResizeColumns(1, headers.length);
+
+  Logger.log('생성 완료: ' + ss.getUrl());
+}</code></pre>
+<div class="box tip">
+<b>독립형</b>은 특정 파일 안에서 시작하지 않고 독립적으로 실행되는 Apps Script입니다.<br/>
+    새 시트·폼·캘린더를 만들거나 여러 Google 서비스를 함께 다룰 때 사용할 수 있습니다.
+  </div>
+<h3>1-2. 컨테이너형 이해</h3>
+<p>이번 심화 실습에서는 이미 존재하는 <b>프로그램운영관리</b> 시트에 기능을 붙입니다.</p>
+<ol>
+<li>실습용 구글시트를 엽니다.</li>
+<li>상단 메뉴에서 <b>확장 프로그램 → Apps Script</b>를 선택합니다.</li>
+<li>이렇게 특정 시트에서 직접 여는 Apps Script를 이번 실습에서는 <b>컨테이너형</b>으로 사용합니다.</li>
+</ol>
+<div class="box">
+<b>권한 승인</b><br/>
+    Apps Script가 Sheets, Drive, Gmail, Calendar 등을 대신 조작하려면 사용자 계정의 권한 승인이 필요합니다.
+    실제 개인정보가 있는 시트는 공유 범위를 반드시 확인하고, 실습에서는 가상 데이터를 사용합니다.
+  </div>
+<h2>STEP 2. 구글시트를 프로그램처럼 만들기</h2>
+<p>이번 단계에서는 다음 화면 기능을 직접 체험합니다.</p>
+<p><b>사용자 정의 메뉴 → 경고창 → 입력창 → 간단 알림 → 대화상자 → 사이드바</b></p>
+<table>
+<thead><tr><th>한글명</th><th>영문명</th><th>역할</th></tr></thead>
+<tbody>
+<tr><td>사용자 정의 메뉴</td><td>Custom Menu</td><td>시트 상단에 업무 메뉴 추가</td></tr>
+<tr><td>경고창</td><td>Alert</td><td>중요한 안내 또는 예/아니오 확인</td></tr>
+<tr><td>입력창</td><td>Prompt</td><td>간단한 값 하나를 입력받음</td></tr>
+<tr><td>간단 알림</td><td>Toast</td><td>잠깐 나타났다 사라지는 안내</td></tr>
+<tr><td>대화상자</td><td>Modal Dialog</td><td>가운데에 안내·미리보기 화면 표시</td></tr>
+<tr><td>사이드바</td><td>Sidebar</td><td>시트 오른쪽에 계속 열어두는 업무 패널</td></tr>
+</tbody>
+</table>
+<div class="action refresh">🔄 중요: onOpen() 메뉴를 만들거나 수정한 뒤에는 Code.gs 저장 → 구글시트로 돌아가 브라우저 새로고침이 필요합니다.</div><h3>2-1. Code.gs 만들기</h3>
+<div class="box warn">
+<b>어느 파일에 넣나요?</b><br/>
+    Apps Script 편집기 왼쪽의 <b>Code.gs</b> 파일에 넣습니다. STEP 2를 처음 시작한다면 기존 내용을 지우고 아래 전체 코드를 붙여넣습니다.
+  </div>
+<pre><code class="language-javascript">function onOpen() {
+  const ui = SpreadsheetApp.getUi();
+
+  ui.createMenu('📋 복지 프로그램 관리')
+    .addItem('안내 메시지 보기', 'showWelcomeAlert')
+    .addItem('담당자 입력하기', 'showManagerPrompt')
+    .addItem('작업 완료 알림', 'showToastMessage')
+    .addSeparator()
+    .addItem('업무 안내창 열기', 'showModalGuide')
+    .addItem('업무 패널 열기', 'showSidebar')
+    .addToUi();
+}
+
+function showWelcomeAlert() {
+  const ui = SpreadsheetApp.getUi();
+
+  const result = ui.alert(
+    '업무 확인',
+    '프로그램 운영 데이터를 정리하시겠습니까?',
+    ui.ButtonSet.YES_NO
+  );
+
+  if (result === ui.Button.YES) {
+    SpreadsheetApp.getActiveSpreadsheet().toast(
+      '정리 작업을 시작합니다.',
+      '업무 자동화',
+      3
+    );
+  } else {
+    SpreadsheetApp.getActiveSpreadsheet().toast(
+      '작업을 취소했습니다.',
+      '업무 자동화',
+      3
+    );
+  }
+}
+
+function showManagerPrompt() {
+  const ui = SpreadsheetApp.getUi();
+
+  const response = ui.prompt(
+    '담당자 입력',
+    '담당자 이름을 입력해주세요.',
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (response.getSelectedButton() === ui.Button.OK) {
+    const managerName = response.getResponseText();
+
+    SpreadsheetApp.getActiveSpreadsheet().toast(
+      managerName + ' 담당자로 입력되었습니다.',
+      '담당자 설정',
+      3
+    );
+  }
+}
+
+function showToastMessage() {
+  SpreadsheetApp.getActiveSpreadsheet().toast(
+    '프로그램 업무 처리가 완료되었습니다.',
+    '완료',
+    5
+  );
+}
+
+function showModalGuide() {
+  const html = HtmlService
+    .createHtmlOutputFromFile('Guide')
+    .setWidth(420)
+    .setHeight(350);
+
+  SpreadsheetApp.getUi().showModalDialog(
+    html,
+    '업무 안내'
+  );
+}
+
+function showSidebar() {
+  const html = HtmlService
+    .createHtmlOutputFromFile('Sidebar')
+    .setTitle('복지 프로그램 업무 패널');
+
+  SpreadsheetApp.getUi().showSidebar(html);
+}</code></pre>
+<h4>실행 방법</h4>
+<ol>
+<li><b>Code.gs 저장</b></li>
+<li>구글시트 화면으로 돌아갑니다.</li>
+<li><b>브라우저 새로고침</b>을 합니다.</li>
+<li>상단에 <b>📋 복지 프로그램 관리</b> 메뉴가 생겼는지 확인합니다.</li>
+</ol>
+<div class="box tip">
+    사용자 정의 메뉴를 처음 만들거나 메뉴 구성을 바꾼 경우에는 시트를 새로고침해야 합니다.
+  </div>
+<h3>2-2. 경고창·입력창·간단 알림 체험</h3>
+<ol>
+<li><b>안내 메시지 보기</b> → 예/아니오 경고창을 확인합니다.</li>
+<li><b>담당자 입력하기</b> → 이름을 입력하고 결과를 확인합니다.</li>
+<li><b>작업 완료 알림</b> → 시트 오른쪽 아래에 잠깐 나타나는 메시지를 확인합니다.</li>
+</ol>
+<div class="box">
+<b>기억하기</b><br/>
+    중요한 확인은 <b>경고창</b>, 간단한 처리 결과는 <b>간단 알림</b>이 적합합니다.
+  </div>
+<h3>2-3. Guide.html 만들기 — 가운데 대화상자</h3>
+<ol>
+<li>Apps Script 편집기 왼쪽의 <b>+ 버튼</b>을 누릅니다.</li>
+<li><b>HTML</b>을 선택합니다.</li>
+<li>파일 이름을 <b>Guide</b>로 입력합니다.</li>
+<li>생성된 <b>Guide.html</b>의 기존 내용을 모두 지우고 아래 코드를 붙여넣습니다.</li>
+<li>저장합니다.</li>
+</ol>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;base target="_top"&gt;
+  &lt;style&gt;
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h2 { margin-top: 0; }
+    .box {
+      background: #f3f6f5;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;📋 복지 프로그램 관리&lt;/h2&gt;
+
+  &lt;div class="box"&gt;
+    이 시트는 프로그램 신청, 상담 일정,
+    진행 상태 및 관련 문서를 관리하기 위한 업무 시트입니다.
+  &lt;/div&gt;
+
+  &lt;div class="box"&gt;
+    1. 프로그램 신청자 확인&lt;br&gt;
+    2. 상담 일정 관리&lt;br&gt;
+    3. 진행 상태 관리&lt;br&gt;
+    4. 관련 문서 및 파일 관리
+  &lt;/div&gt;
+
+  &lt;button onclick="google.script.host.close()"&gt;
+    닫기
+  &lt;/button&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p><b>실행:</b> 구글시트 → <b>📋 복지 프로그램 관리 → 업무 안내창 열기</b></p>
+<p>가운데에 안내창이 뜨면 정상입니다.</p>
+<h3>2-4. Sidebar.html 만들기 — 오른쪽 업무 패널</h3>
+<ol>
+<li>Apps Script 편집기 왼쪽 <b>+ 버튼 → HTML</b>을 선택합니다.</li>
+<li>파일 이름을 <b>Sidebar</b>로 입력합니다.</li>
+<li>생성된 <b>Sidebar.html</b>의 기존 내용을 모두 지우고 아래 코드를 붙여넣습니다.</li>
+<li>저장합니다.</li>
+</ol>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;base target="_top"&gt;
+  &lt;style&gt;
+    body {
+      font-family: Arial, sans-serif;
+      padding: 18px;
+    }
+    h2 { margin-top: 0; }
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      margin-top: 18px;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #message {
+      margin-top: 12px;
+      font-size: 13px;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;h2&gt;📝 프로그램 업무 패널&lt;/h2&gt;
+
+  &lt;label&gt;이용자명&lt;/label&gt;
+  &lt;input type="text" id="clientName"&gt;
+
+  &lt;label&gt;프로그램&lt;/label&gt;
+  &lt;select id="programName"&gt;
+    &lt;option value=""&gt;선택해주세요&lt;/option&gt;
+    &lt;option&gt;스마트폰 활용교육&lt;/option&gt;
+    &lt;option&gt;건강증진 프로그램&lt;/option&gt;
+    &lt;option&gt;가족지원 프로그램&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;label&gt;담당자&lt;/label&gt;
+  &lt;select id="manager"&gt;
+    &lt;option value=""&gt;선택해주세요&lt;/option&gt;
+    &lt;option&gt;박지현&lt;/option&gt;
+    &lt;option&gt;김민수&lt;/option&gt;
+    &lt;option&gt;최서연&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;label&gt;상태&lt;/label&gt;
+  &lt;select id="status"&gt;
+    &lt;option&gt;대기&lt;/option&gt;
+    &lt;option&gt;진행중&lt;/option&gt;
+    &lt;option&gt;완료&lt;/option&gt;
+    &lt;option&gt;보류&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;button onclick="testInput()"&gt;
+    입력내용 확인
+  &lt;/button&gt;
+
+  &lt;div id="message"&gt;&lt;/div&gt;
+
+  &lt;script&gt;
+    function testInput() {
+      const clientName =
+        document.getElementById('clientName').value;
+
+      const programName =
+        document.getElementById('programName').value;
+
+      const manager =
+        document.getElementById('manager').value;
+
+      const status =
+        document.getElementById('status').value;
+
+      document.getElementById('message').innerHTML =
+        '이용자: ' + clientName +
+        '&lt;br&gt;프로그램: ' + programName +
+        '&lt;br&gt;담당자: ' + manager +
+        '&lt;br&gt;상태: ' + status;
+    }
+  &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h4>실행 방법</h4>
+<ol>
+<li>구글시트로 돌아갑니다.</li>
+<li><b>📋 복지 프로그램 관리 → 업무 패널 열기</b>를 선택합니다.</li>
+<li>오른쪽에 사이드바가 열리는지 확인합니다.</li>
+<li>이용자명, 프로그램, 담당자, 상태를 입력합니다.</li>
+<li><b>입력내용 확인</b>을 누릅니다.</li>
+</ol>
+<div class="box tip">
+    이 단계에서는 입력값이 사이드바 화면 안에서만 움직입니다. 아직 구글시트에는 저장되지 않습니다.
+  </div>
+<div class="flow">
+    사이드바 화면 → 화면 안에서 입력값 확인<br/>
+    (아직 시트 저장 기능 없음)
+  </div>
+<h2>STEP 3. 사이드바 입력값을 구글시트에 저장하기</h2>
+<p>이제 사이드바 화면에서 입력한 내용을 실제 <b>프로그램운영관리</b> 시트 마지막 행에 저장합니다.</p>
+<div class="flow">
+    사이드바 화면 → 입력값 전달 → 앱스 스크립트에서 처리 → 구글시트에 저장
+  </div>
+<h3>3-1. 현재 파일 구조 확인</h3>
+<p>Apps Script 왼쪽 파일 목록이 아래와 같아야 합니다.</p>
+<pre><code>Code.gs
+Guide.html
+Sidebar.html</code></pre>
+<table>
+<thead><tr><th>파일</th><th>역할</th></tr></thead>
+<tbody>
+<tr><td>Code.gs</td><td>구글시트 데이터를 읽고 쓰는 실제 업무 처리</td></tr>
+<tr><td>Guide.html</td><td>가운데에 뜨는 업무 안내 대화상자</td></tr>
+<tr><td>Sidebar.html</td><td>오른쪽에 열리는 프로그램 업무 패널</td></tr>
+</tbody>
+</table>
+<div class="box warn">
+    STEP 3에서는 <b>Code.gs와 Sidebar.html만 수정</b>합니다. Guide.html은 건드리지 않습니다.
+  </div>
+<h3>3-2. Code.gs에 시트 저장 기능 추가</h3>
+<p><b>기존 STEP 2 코드는 지우지 않습니다.</b></p>
+<ol>
+<li><b>Code.gs</b>를 클릭합니다.</li>
+<li>현재 코드의 가장 아래로 이동합니다.</li>
+<li>아래 <b>saveProgramData()</b> 함수를 통째로 추가합니다.</li>
+<li>저장합니다.</li>
+</ol>
+<pre><code class="language-javascript">function saveProgramData(formData) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName('프로그램운영관리');
+
+  if (!sheet) {
+    throw new Error('프로그램운영관리 시트를 찾을 수 없습니다.');
+  }
+
+  if (!formData.clientName) {
+    throw new Error('이용자명이 없습니다.');
+  }
+
+  if (!formData.programName) {
+    throw new Error('프로그램명이 없습니다.');
+  }
+
+  if (!formData.manager) {
+    throw new Error('담당자가 없습니다.');
+  }
+
+  const lastRow = sheet.getLastRow();
+  let nextNumber = 1;
+
+  if (lastRow &gt;= 2) {
+    const numbers = sheet
+      .getRange(2, 1, lastRow - 1, 1)
+      .getValues()
+      .flat();
+
+    const numericNumbers = numbers
+      .map(value =&gt; String(value).match(/^P(\d+)$/))
+      .filter(match =&gt; match)
+      .map(match =&gt; Number(match[1]));
+
+    if (numericNumbers.length &gt; 0) {
+      nextNumber = Math.max(...numericNumbers) + 1;
+    }
+  }
+
+  const newNumber =
+    'P' + String(nextNumber).padStart(3, '0');
+
+  const today = Utilities.formatDate(
+    new Date(),
+    'Asia/Seoul',
+    'yyyy-MM-dd'
+  );
+
+  const newRow = [
+    newNumber,
+    formData.clientName,
+    formData.programName,
+    today,
+    formData.manager,
+    formData.status || '대기',
+    '',
+    '',
+    formData.memo || '',
+    ''
+  ];
+
+  sheet.appendRow(newRow);
+
+  ss.toast(
+    newNumber + ' 접수가 저장되었습니다.',
+    '저장 완료',
+    3
+  );
+
+  console.log('신규 데이터 저장 완료');
+  console.log(newRow);
+
+  return newNumber;
+}</code></pre>
+<h3>3-3. Sidebar.html에 비고 입력칸 추가</h3>
+<p><b>Sidebar.html</b>을 열고, 상태 선택 부분 바로 아래에 다음 코드를 추가합니다.</p>
+<pre><code class="language-html">&lt;label&gt;비고&lt;/label&gt;
+&lt;input type="text" id="memo"&gt;</code></pre>
+<h3>3-4. 기존 버튼 교체</h3>
+<p>기존의 다음 버튼을 찾습니다.</p>
+<pre><code class="language-html">&lt;button onclick="testInput()"&gt;
+  입력내용 확인
+&lt;/button&gt;</code></pre>
+<p><b>위 버튼 코드를 삭제하고</b> 아래 코드로 교체합니다.</p>
+<pre><code class="language-html">&lt;button onclick="saveData()"&gt;
+  시트에 저장
+&lt;/button&gt;
+
+&lt;div id="message"&gt;&lt;/div&gt;</code></pre>
+<h3>3-5. 기존 testInput() 함수를 saveData()로 교체</h3>
+<div class="box danger">
+<b>중요</b><br/>
+    Sidebar.html 아래쪽의 <code>&lt;script&gt;</code>와 <code>&lt;/script&gt;</code> 태그 자체는 지우지 않습니다.
+    그 안에 있는 기존 <b>testInput()</b> 함수만 통째로 지우고, 아래 코드로 교체합니다.
+  </div>
+<pre><code class="language-html">&lt;script&gt;
+
+  function saveData() {
+
+    const clientName =
+      document.getElementById('clientName').value;
+
+    const programName =
+      document.getElementById('programName').value;
+
+    const manager =
+      document.getElementById('manager').value;
+
+    const status =
+      document.getElementById('status').value;
+
+    const memo =
+      document.getElementById('memo').value;
+
+    if (!clientName) {
+      document.getElementById('message').innerHTML =
+        '이용자명을 입력해주세요.';
+      return;
+    }
+
+    if (!programName) {
+      document.getElementById('message').innerHTML =
+        '프로그램을 선택해주세요.';
+      return;
+    }
+
+    if (!manager) {
+      document.getElementById('message').innerHTML =
+        '담당자를 선택해주세요.';
+      return;
+    }
+
+    const formData = {
+      clientName: clientName,
+      programName: programName,
+      manager: manager,
+      status: status,
+      memo: memo
+    };
+
+    document.getElementById('message').innerHTML =
+      '저장 중입니다...';
+
+    google.script.run
+
+      .withSuccessHandler(function(number) {
+
+        document.getElementById('message').innerHTML =
+          number + ' 접수가 저장되었습니다.';
+
+        document.getElementById('clientName').value = '';
+        document.getElementById('programName').value = '';
+        document.getElementById('manager').value = '';
+        document.getElementById('status').value = '대기';
+        document.getElementById('memo').value = '';
+
+      })
+
+      .withFailureHandler(function(error) {
+
+        document.getElementById('message').innerHTML =
+          '저장 중 오류가 발생했습니다.&lt;br&gt;' +
+          error.message;
+
+      })
+
+      .saveProgramData(formData);
+
+  }
+
+&lt;/script&gt;</code></pre>
+<div class="action no-run">🚫 saveProgramData()는 Apps Script의 실행 ▶ 버튼으로 실행하지 않습니다. Sidebar에서 “시트에 저장” 버튼으로 테스트합니다.</div><h3>3-6. 저장 후 실제 실행</h3>
+<ol>
+<li><b>Code.gs 저장</b></li>
+<li><b>Sidebar.html 저장</b></li>
+<li>구글시트 화면으로 돌아갑니다.</li>
+<li>기존 사이드바가 열려 있다면 <b>닫습니다.</b></li>
+<li><b>📋 복지 프로그램 관리 → 업무 패널 열기</b>를 다시 선택합니다.</li>
+<li>다음 예시값을 입력합니다.</li>
+</ol>
+<pre><code>이용자명: 이용자013
+프로그램: 스마트폰 활용교육
+담당자: 박지현
+상태: 진행중
+비고: 신규 상담 예정</code></pre>
+<p><b>시트에 저장</b> 버튼을 누릅니다.</p>
+<div class="box tip">
+    이번 단계에서는 구글시트 전체를 새로고침할 필요가 없습니다. Sidebar.html을 수정한 경우 기존 사이드바를 닫고 다시 열면 수정된 화면이 적용됩니다.
+  </div>
+<h3>3-7. 정상 작동 결과</h3>
+<ul class="check">
+<li>사이드바에 <b>P013 접수가 저장되었습니다.</b> 표시</li>
+<li>구글시트 오른쪽 아래에 <b>저장 완료</b> 간단 알림 표시</li>
+<li>프로그램운영관리 시트 맨 아래에 P013 행 추가</li>
+<li>Apps Script의 실행 기록에서 저장 로그 확인 가능</li>
+</ul>
+<table>
+<thead><tr><th>용어</th><th>쉬운 설명</th></tr></thead>
+<tbody>
+<tr><td>google.script.run</td><td>사이드바에서 앱스 스크립트 기능을 실행하도록 연결하는 다리</td></tr>
+<tr><td>formData</td><td>사이드바에서 입력한 여러 정보를 하나로 묶은 데이터</td></tr>
+<tr><td>appendRow()</td><td>시트의 마지막 행 아래에 새 행을 추가</td></tr>
+<tr><td>withSuccessHandler()</td><td>작업이 성공했을 때 실행할 내용</td></tr>
+<tr><td>withFailureHandler()</td><td>작업이 실패했을 때 오류를 보여줄 내용</td></tr>
+<tr><td>console.log()</td><td>실행 기록에 처리 내용을 남겨 오류 확인에 도움</td></tr>
+</tbody>
+</table>
+<h3>3-9. 일부러 오류 내보기</h3>
+<p>Code.gs에서 아래 코드를 찾습니다.</p>
+<pre><code class="language-javascript">const sheet = ss.getSheetByName('프로그램운영관리');</code></pre>
+<p>잠시 다음처럼 일부러 잘못 바꿉니다.</p>
+<pre><code class="language-javascript">const sheet = ss.getSheetByName('프로그램운영관라');</code></pre>
+<p>저장한 뒤 사이드바에서 데이터를 다시 저장해봅니다. 오류 메시지를 확인한 뒤 반드시 원래 이름으로 복구합니다.</p>
+<div class="box tip">
+<b>실행 기록 확인</b><br/>
+    Apps Script 왼쪽 메뉴의 <b>실행 기록</b>에서 <code>console.log()</code>로 남긴 내용을 확인할 수 있습니다.
+  </div>
+<div class="box">
+<b>다음 단계</b><br/>
+    기능을 충분히 체험한 뒤, 사용자 정의 메뉴·경고창·입력창·간단 알림·대화상자·사이드바를 생성형 AI에게 직접 요청하는 프롬프트 작성 실습으로 이어갑니다.
+  </div>
+<h2>STEP 4. 트리거와 로그로 자동화 흐름 확인하기</h2>
+<p>이번 단계에서는 <b>상태가 완료되면 완료일을 자동으로 입력</b>하고, 코드가 어디까지 실행됐는지 <b>로그</b>로 확인합니다. 마지막에는 STEP 3의 사이드바 저장에도 같은 업무 규칙을 적용합니다.</p>
+<div class="flow">시트에서 상태 직접 수정 → onEdit() 자동 실행 → 완료일 입력 → 실행 기록 확인</div>
+<p><b>트리거</b>는 “어떤 일이 발생하면 지정한 코드를 자동으로 실행하는 기능”입니다. STEP 2의 <code>onOpen()</code>도 이미 사용한 트리거입니다.</p>
+<div class="box">
+<b>HTML</b> = 사용자가 보는 화면<br/>
+<b>Code.gs</b> = 실제 업무 처리<br/>
+<b>트리거</b> = 특정 상황에서 Code.gs 기능을 자동 실행
+</div>
+<h3>4-3. Code.gs 맨 아래에 onEdit() 추가</h3>
+<div class="box warn">
+기존 코드는 지우지 않습니다. <b>Code.gs 가장 아래에 새로운 함수로 추가</b>합니다. saveProgramData() 함수 안에 넣지 않습니다.
+</div>
+<pre><code class="language-javascript">function onEdit(e) {
+
+  console.log('===== 편집 트리거 시작 =====');
+
+  try {
+
+    if (!e || !e.range) {
+      console.log(
+        '수정 정보가 없습니다. onEdit은 시트에서 셀을 직접 수정하여 테스트해주세요.'
+      );
+      return;
+    }
+
+    const range = e.range;
+    const sheet = range.getSheet();
+    const row = range.getRow();
+    const column = range.getColumn();
+    const value = range.getDisplayValue();
+
+    console.log('수정된 시트: ' + sheet.getName());
+    console.log('수정된 행: ' + row);
+    console.log('수정된 열: ' + column);
+    console.log('수정 후 값: ' + value);
+
+    if (
+      range.getNumRows() !== 1 ||
+      range.getNumColumns() !== 1
+    ) {
+      console.log(
+        '여러 셀이 한꺼번에 수정되어 자동 처리를 종료합니다.'
+      );
+      return;
+    }
+
+    if (sheet.getName() !== '프로그램운영관리') {
+      console.log(
+        '프로그램운영관리 시트가 아니므로 종료합니다.'
+      );
+      return;
+    }
+
+    if (row === 1) {
+      console.log('제목 행이므로 종료합니다.');
+      return;
+    }
+
+    if (column !== 6) {
+      console.log(
+        '상태 열이 아니므로 종료합니다.'
+      );
+      return;
+    }
+
+    console.log('상태 열이 수정되었습니다.');
+
+    if (value !== '완료') {
+      console.log(
+        '상태가 완료가 아니므로 종료합니다.'
+      );
+      return;
+    }
+
+    console.log('상태가 완료입니다.');
+
+    const completedDateCell =
+      sheet.getRange(row, 8);
+
+    const existingDate =
+      completedDateCell.getValue();
+
+    console.log(
+      '현재 완료일: ' + existingDate
+    );
+
+    if (existingDate !== '') {
+      console.log(
+        '이미 완료일이 있으므로 변경하지 않습니다.'
+      );
+      return;
+    }
+
+    completedDateCell.setValue(
+      new Date()
+    );
+
+    completedDateCell.setNumberFormat(
+      'yyyy-MM-dd'
+    );
+
+    console.log(
+      row + '행에 완료일을 입력했습니다.'
+    );
+
+    console.log(
+      '===== 편집 트리거 정상 종료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '오류 발생: ' + error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<div class="action no-run">🚫 onEdit(e)는 실행 ▶ 버튼으로 테스트하지 않습니다. 프로그램운영관리 시트의 F열을 직접 수정합니다. 새로고침은 필요 없습니다.</div><h3>4-4. 실행 방법</h3>
+<ol>
+<li>Code.gs 저장</li>
+<li>구글시트로 돌아가기</li>
+<li>프로그램운영관리 시트에서 F열 상태를 <b>대기/진행중/보류 → 완료</b>로 변경</li>
+<li>같은 행 H열 완료일에 오늘 날짜가 들어오는지 확인</li>
+<li>Apps Script → <b>실행 기록</b>에서 로그 확인</li>
+</ol>
+<div class="box tip">onEdit()은 시트 셀을 직접 수정해서 테스트합니다. Apps Script의 실행 버튼을 누르지 않습니다.</div>
+<pre><code>수정된 시트: 프로그램운영관리
+수정된 행: 3
+수정된 열: 6
+수정 후 값: 완료
+상태 열이 수정되었습니다.
+상태가 완료입니다.
+3행에 완료일을 입력했습니다.</code></pre>
+<pre><code>수정된 열: 9
+상태 열이 아니므로 종료합니다.</code></pre>
+<h3>4-7. 사이드바에서도 완료 상태 저장해보기</h3>
+<p>상단 메뉴의 <b>📋 복지 프로그램 관리 → 업무 패널 열기</b>를 사용합니다. 이 메뉴는 STEP 2에서 이미 만든 사용자 정의 메뉴입니다.</p>
+<p>사이드바에서 상태를 <b>완료</b>로 선택해 저장해봅니다. STEP 3 코드 그대로라면 새 행은 생겨도 완료일이 비어 있을 수 있습니다.</p>
+<div class="box">
+<b>왜?</b><br/>
+사람이 셀을 직접 수정하면 onEdit()이 실행됩니다. 하지만 사이드바 저장은 Apps Script가 코드를 통해 새 행을 추가하는 것이므로 단순 onEdit()이 다시 실행되는 방식이 아닙니다.
+</div>
+<h3>4-8. 기존 saveProgramData() 전체 교체</h3>
+<div class="box danger">
+Code.gs에서 기존 <b>saveProgramData(formData)</b> 함수만 통째로 지우고 아래 전체 함수로 교체합니다. onOpen(), showSidebar(), onEdit() 등 다른 함수는 지우지 않습니다.
+</div>
+<pre><code class="language-javascript">function saveProgramData(formData) {
+
+  console.log('===== 사이드바 저장 시작 =====');
+
+  try {
+
+    const ss =
+      SpreadsheetApp.getActiveSpreadsheet();
+
+    const sheet =
+      ss.getSheetByName(
+        '프로그램운영관리'
+      );
+
+    if (!sheet) {
+      throw new Error(
+        '프로그램운영관리 시트를 찾을 수 없습니다.'
+      );
+    }
+
+    if (!formData.clientName) {
+      throw new Error('이용자명이 없습니다.');
+    }
+
+    if (!formData.programName) {
+      throw new Error('프로그램명이 없습니다.');
+    }
+
+    if (!formData.manager) {
+      throw new Error('담당자가 없습니다.');
+    }
+
+    console.log(
+      '이용자명: ' + formData.clientName
+    );
+
+    console.log(
+      '프로그램명: ' + formData.programName
+    );
+
+    console.log(
+      '담당자: ' + formData.manager
+    );
+
+    console.log(
+      '상태: ' + formData.status
+    );
+
+    const lastRow =
+      sheet.getLastRow();
+
+    let nextNumber = 1;
+
+    if (lastRow &gt;= 2) {
+
+      const numbers =
+        sheet
+          .getRange(
+            2,
+            1,
+            lastRow - 1,
+            1
+          )
+          .getValues()
+          .flat();
+
+      const numericNumbers =
+        numbers
+          .map(function(value) {
+            return String(value)
+              .match(/^P(\d+)$/);
+          })
+          .filter(function(match) {
+            return match;
+          })
+          .map(function(match) {
+            return Number(match[1]);
+          });
+
+      if (numericNumbers.length &gt; 0) {
+        nextNumber =
+          Math.max(...numericNumbers) + 1;
+      }
+    }
+
+    const newNumber =
+      'P' +
+      String(nextNumber)
+        .padStart(3, '0');
+
+    const today =
+      Utilities.formatDate(
+        new Date(),
+        'Asia/Seoul',
+        'yyyy-MM-dd'
+      );
+
+    let completedDate = '';
+
+    if (formData.status === '완료') {
+
+      completedDate = new Date();
+
+      console.log(
+        '상태가 완료이므로 완료일도 함께 저장합니다.'
+      );
+
+    } else {
+
+      console.log(
+        '상태가 완료가 아니므로 완료일은 비워둡니다.'
+      );
+    }
+
+    const newRow = [
+      newNumber,
+      formData.clientName,
+      formData.programName,
+      today,
+      formData.manager,
+      formData.status || '대기',
+      '',
+      completedDate,
+      formData.memo || '',
+      ''
+    ];
+
+    sheet.appendRow(newRow);
+
+    const savedRow =
+      sheet.getLastRow();
+
+    if (formData.status === '완료') {
+      sheet
+        .getRange(savedRow, 8)
+        .setNumberFormat('yyyy-MM-dd');
+    }
+
+    console.log(
+      '저장된 행: ' + savedRow
+    );
+
+    console.log(
+      '생성된 접수번호: ' + newNumber
+    );
+
+    ss.toast(
+      newNumber + ' 접수가 저장되었습니다.',
+      '저장 완료',
+      3
+    );
+
+    console.log(
+      '===== 사이드바 저장 정상 종료 ====='
+    );
+
+    return newNumber;
+
+  } catch (error) {
+
+    console.error(
+      '사이드바 저장 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<h3>4-9. 사이드바에서 다시 확인</h3>
+<ol>
+<li>Code.gs 저장</li>
+<li>상단 메뉴 → 업무 패널 열기</li>
+<li>상태를 <b>완료</b>로 선택하고 저장</li>
+<li>상태와 완료일이 함께 저장되는지 확인</li>
+<li>다시 상태를 <b>진행중</b>으로 새 데이터 저장 → 완료일이 비어 있는지 확인</li>
+</ol>
+<div class="box tip">
+<b>STEP 4 핵심</b><br/>
+같은 업무 규칙이라도 실행 경로가 다르면 각각 코드에 반영해야 할 수 있습니다. 자동화가 안 될 때는 로그를 충분히 넣어 어디까지 실행됐는지 확인합니다.
+</div>
+<h2>STEP 5. 프로그램 운영 현황 자동 집계하기</h2>
+<p>STEP 4에서는 한 셀의 변화에 반응했습니다. STEP 5에서는 <b>여러 행을 한 번에 읽어 전체 운영 현황을 집계</b>하고, 같은 함수를 직접 실행 → 사이드바 실행 → 시간 기반 자동 실행으로 확장합니다.</p>
+<div class="flow">전체 데이터 읽기 → 상태별 집계 → 직접 실행 → 사이드바 실행 → 시간 기반 자동 실행</div>
+<h3>5-1. 이번 단계에서 사용할 파일</h3>
+<table>
+<thead><tr><th>파일</th><th>작업</th></tr></thead>
+<tbody>
+<tr><td>Code.gs</td><td>운영 현황 집계 함수 추가</td></tr>
+<tr><td>Sidebar.html</td><td>운영 현황 확인 버튼과 결과 표시 추가</td></tr>
+<tr><td>Guide.html</td><td>수정하지 않음</td></tr>
+</tbody>
+</table>
+<h3>5-2. 왜 이번에는 스프레드시트 ID를 사용하나?</h3>
+<p>이번 단계는 마지막에 <b>시간 기반 트리거</b>까지 연결합니다. 사용자가 시트를 열어놓지 않아도 어떤 파일을 사용할지 명확하게 지정하기 위해 <code>openById()</code>를 사용합니다.</p>
+<div class="box warn">
+아래 코드의 스프레드시트 ID는 강사의 실습용 파일 ID입니다. <b>자기 시트 사본을 사용하는 경우 반드시 자신의 ID로 바꿉니다.</b><br/><br/>
+주소가 <code>https://docs.google.com/spreadsheets/d/1ABC123/edit</code>라면 <code>1ABC123</code> 부분이 ID입니다.
+</div>
+<h3>5-3. Code.gs 맨 아래에 운영 현황 집계 함수 추가</h3>
+<pre><code class="language-javascript">function checkProgramStatus() {
+
+  console.log(
+    '===== 프로그램 운영 현황 확인 시작 ====='
+  );
+
+  try {
+
+    // 자신의 실습용 스프레드시트 ID로 바꿉니다.
+    const SPREADSHEET_ID =
+      '1mMKkWkq3BB5HpitCq8ZbUQCMPyn_6jgYUmLgnprAENs';
+
+    // 시간 기반 트리거에서도 같은 파일을 확실하게 열기 위해 ID를 사용합니다.
+    const ss =
+      SpreadsheetApp.openById(
+        SPREADSHEET_ID
+      );
+
+    const sheet =
+      ss.getSheetByName(
+        '프로그램운영관리'
+      );
+
+    if (!sheet) {
+      throw new Error(
+        '프로그램운영관리 시트를 찾을 수 없습니다.'
+      );
+    }
+
+    const lastRow =
+      sheet.getLastRow();
+
+    console.log(
+      '현재 마지막 행: ' + lastRow
+    );
+
+    if (lastRow &lt; 2) {
+
+      console.log(
+        '확인할 데이터가 없습니다.'
+      );
+
+      return {
+        total: 0,
+        waiting: 0,
+        progressing: 0,
+        completed: 0,
+        paused: 0
+      };
+    }
+
+    // A2:J마지막행 범위를 한 번에 읽습니다.
+    const data =
+      sheet
+        .getRange(
+          2,
+          1,
+          lastRow - 1,
+          10
+        )
+        .getValues();
+
+    // 중간에 빈 행이 있어도 접수번호가 있는 행만 실제 데이터로 계산합니다.
+    const validData =
+      data.filter(
+        function(rowData) {
+          return rowData[0] !== '';
+        }
+      );
+
+    console.log(
+      '가져온 실제 데이터 수: ' +
+      validData.length
+    );
+
+    let waiting = 0;
+    let progressing = 0;
+    let completed = 0;
+    let paused = 0;
+
+    validData.forEach(
+      function(rowData) {
+
+        const status =
+          rowData[5];
+
+        if (status === '대기') {
+          waiting++;
+        }
+
+        else if (status === '진행중') {
+          progressing++;
+        }
+
+        else if (status === '완료') {
+          completed++;
+        }
+
+        else if (status === '보류') {
+          paused++;
+        }
+      }
+    );
+
+    const result = {
+      total: validData.length,
+      waiting: waiting,
+      progressing: progressing,
+      completed: completed,
+      paused: paused
+    };
+
+    console.log(
+      '전체: ' + result.total + '명'
+    );
+
+    console.log(
+      '대기: ' + result.waiting + '명'
+    );
+
+    console.log(
+      '진행중: ' +
+      result.progressing + '명'
+    );
+
+    console.log(
+      '완료: ' + result.completed + '명'
+    );
+
+    console.log(
+      '보류: ' + result.paused + '명'
+    );
+
+    console.log(
+      '===== 프로그램 운영 현황 확인 완료 ====='
+    );
+
+    return result;
+
+  } catch (error) {
+
+    console.error(
+      '운영 현황 확인 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<p>마지막 행이 13이라면 사실상 <b>A2:J13</b>을 읽는 것과 같은 의미입니다.</p>
+<div class="box tip">
+이 방식은 뒤의 <b>배치 처리·성능 최적화</b>와 연결됩니다. 지금은 “한 셀씩 계속 읽지 않고 필요한 범위를 한 번에 가져온다”까지만 확실히 이해합니다.
+</div>
+<p>배열은 첫 번째 값을 0부터 세므로 F열 상태는 <code>rowData[5]</code>입니다.</p>
+<pre><code class="language-javascript">const validData =
+  data.filter(function(rowData) {
+    return rowData[0] !== '';
+  });</code></pre>
+<div class="action run">✅ checkProgramStatus()는 실행 ▶ 버튼으로 직접 테스트합니다.</div><h3>5-8. 먼저 직접 실행</h3>
+<ol>
+<li>Code.gs 저장</li>
+<li>상단 함수 선택에서 <b>checkProgramStatus</b> 선택</li>
+<li><b>실행 ▶</b></li>
+<li>처음이라면 권한 승인</li>
+<li>Apps Script → <b>실행 기록</b> 확인</li>
+</ol>
+<pre><code>전체: 12명
+대기: 3명
+진행중: 4명
+완료: 3명
+보류: 2명</code></pre>
+<p class="small">STEP 4에서 데이터를 추가하거나 수정했다면 숫자는 달라질 수 있습니다.</p>
+<div class="action refresh">↻ Sidebar.html만 수정한 경우 시트 전체 새로고침은 필요 없습니다. 기존 사이드바를 닫고 다시 엽니다.</div><h3>5-9. Sidebar.html에 운영 현황 버튼 추가</h3>
+<p>기존의 <b>시트에 저장 버튼과 message 영역은 지우지 않습니다.</b> 그 바로 아래에 다음 코드를 추가합니다.</p>
+<pre><code class="language-html">&lt;hr&gt;
+
+&lt;button onclick="loadProgramStatus()"&gt;
+  운영 현황 확인
+&lt;/button&gt;
+
+&lt;div id="statusSummary"&gt;&lt;/div&gt;</code></pre>
+<h3>5-10. Sidebar.html의 script 안에 함수 추가</h3>
+<div class="box warn">
+기존 <b>saveData()</b> 함수는 지우지 않습니다. <code>&lt;script&gt;</code>와 <code>&lt;/script&gt;</code> 사이에서 saveData()가 끝난 아래쪽에 다음 함수만 추가합니다.
+</div>
+<pre><code class="language-javascript">function loadProgramStatus() {
+
+  document
+    .getElementById('statusSummary')
+    .innerHTML =
+      '운영 현황을 확인 중입니다...';
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        document
+          .getElementById('statusSummary')
+          .innerHTML =
+
+            '&lt;br&gt;' +
+
+            '&lt;b&gt;전체&lt;/b&gt;: ' +
+            result.total + '명&lt;br&gt;' +
+
+            '&lt;b&gt;대기&lt;/b&gt;: ' +
+            result.waiting + '명&lt;br&gt;' +
+
+            '&lt;b&gt;진행중&lt;/b&gt;: ' +
+            result.progressing + '명&lt;br&gt;' +
+
+            '&lt;b&gt;완료&lt;/b&gt;: ' +
+            result.completed + '명&lt;br&gt;' +
+
+            '&lt;b&gt;보류&lt;/b&gt;: ' +
+            result.paused + '명';
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        document
+          .getElementById('statusSummary')
+          .innerHTML =
+
+            '운영 현황 확인 중 오류가 발생했습니다.&lt;br&gt;' +
+            error.message;
+      }
+    )
+
+    .checkProgramStatus();
+}</code></pre>
+<h3>5-11. 사이드바에서 실행</h3>
+<ol>
+<li>Sidebar.html 저장</li>
+<li>구글시트로 돌아가기</li>
+<li>기존 사이드바를 닫고 다시 <b>📋 복지 프로그램 관리 → 업무 패널 열기</b></li>
+<li><b>운영 현황 확인</b> 버튼 클릭</li>
+<li>전체·대기·진행중·완료·보류 인원이 표시되는지 확인</li>
+</ol>
+<div class="action setting">⚙️ 별도 설정: Apps Script 왼쪽 “트리거”에서 시간 기반 트리거를 추가합니다. 수업 테스트가 끝나면 테스트용 트리거를 삭제합니다.</div><h3>5-12. 같은 함수를 시간 기반 트리거로 자동 실행</h3>
+<ol>
+<li>Apps Script 왼쪽의 <b>트리거</b> 클릭</li>
+<li><b>트리거 추가</b></li>
+<li>실행할 함수: <b>checkProgramStatus</b></li>
+<li>이벤트 소스: <b>시간 기반</b></li>
+<li>테스트할 때는 짧은 주기를 선택하고, 실제 업무에서는 매일·매주·매월 등으로 설정</li>
+<li>저장 후 필요하면 권한 승인</li>
+</ol>
+<div class="box">
+시간 기반 트리거가 실행되어도 사이드바가 자동으로 열리지는 않습니다. 현재 함수는 현황을 계산하고 로그에 남깁니다. 이후 단계에서 이메일 발송, 보고서 생성, 요약 시트 업데이트 등으로 확장할 수 있습니다.
+</div>
+<h3>5-13. 실행 방법 비교</h3>
+<table>
+<thead><tr><th>실행 방식</th><th>누가 실행?</th><th>결과 확인</th></tr></thead>
+<tbody>
+<tr><td>직접 실행</td><td>사람</td><td>실행 기록</td></tr>
+<tr><td>사이드바 실행</td><td>사람</td><td>사이드바 화면</td></tr>
+<tr><td>시간 기반 트리거</td><td>Google이 자동 실행</td><td>실행 기록</td></tr>
+</tbody>
+</table>
+<div class="box tip">
+<b>STEP 5 핵심</b><br/>
+여러 행을 한 번에 읽고 집계하는 방법을 익혔고, 같은 함수가 직접 실행·사이드바 실행·시간 기반 자동 실행으로 확장될 수 있다는 것을 확인했습니다.
+</div>
+<h2>STEP 6. 개별 처리와 배치 처리 속도 비교하기</h2>
+<p>STEP 5에서 <code>getValues()</code>로 여러 행을 한 번에 읽었습니다. 이번에는 왜 이런 방식이 중요한지 <b>직접 실행시간을 비교</b>합니다.</p>
+<div class="flow">개별 처리 → 실행시간 확인 → 초기화 → 배치 처리 → 실행시간 비교</div>
+<h3>6-1. 이번 단계에서 수정하는 파일</h3>
+<table>
+<thead><tr><th>파일</th><th>작업</th></tr></thead>
+<tbody>
+<tr><td>Code.gs</td><td>성능 비교용 함수 3개 추가</td></tr>
+<tr><td>Sidebar.html</td><td>수정하지 않음</td></tr>
+<tr><td>Guide.html</td><td>수정하지 않음</td></tr>
+</tbody>
+</table>
+<div class="action run">✅ STEP 6의 세 함수는 모두 실행 ▶ 버튼으로 실행합니다. 새로고침이나 별도 설정은 없습니다.</div><h3>6-2. 성능테스트 시트와 500개 데이터 만들기</h3>
+<p><b>Code.gs 맨 아래</b>에 다음 함수를 추가합니다. 기존 코드는 지우지 않습니다.</p>
+<pre><code class="language-javascript">function createPerformanceTestData() {
+
+  console.log(
+    '===== 성능 테스트 데이터 생성 시작 ====='
+  );
+
+  try {
+
+    const ss =
+      SpreadsheetApp.getActiveSpreadsheet();
+
+    let sheet =
+      ss.getSheetByName(
+        '성능테스트'
+      );
+
+    if (!sheet) {
+
+      sheet =
+        ss.insertSheet(
+          '성능테스트'
+        );
+
+      console.log(
+        '성능테스트 시트를 새로 만들었습니다.'
+      );
+
+    } else {
+
+      sheet.clear();
+
+      console.log(
+        '기존 성능테스트 시트를 초기화했습니다.'
+      );
+    }
+
+    sheet
+      .getRange(
+        1,
+        1,
+        1,
+        3
+      )
+      .setValues([
+        [
+          '번호',
+          '처리상태',
+          '처리결과'
+        ]
+      ]);
+
+    const testData = [];
+
+    for (
+      let i = 1;
+      i &lt;= 500;
+      i++
+    ) {
+
+      testData.push([
+        i,
+        '대기',
+        ''
+      ]);
+    }
+
+    sheet
+      .getRange(
+        2,
+        1,
+        testData.length,
+        3
+      )
+      .setValues(
+        testData
+      );
+
+    SpreadsheetApp.flush();
+
+    console.log(
+      '생성된 테스트 데이터: ' +
+      testData.length +
+      '건'
+    );
+
+    console.log(
+      '===== 성능 테스트 데이터 생성 완료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '테스트 데이터 생성 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<h3>6-3. 테스트 데이터 생성</h3>
+<ol>
+<li>Code.gs 저장</li>
+<li>상단 함수 선택 → <b>createPerformanceTestData</b></li>
+<li><b>실행 ▶</b></li>
+<li>구글시트로 돌아가기</li>
+<li><b>성능테스트</b> 시트가 생성되었는지 확인</li>
+</ol>
+<p>정상이라면 번호 1~500, 처리상태는 모두 <b>대기</b>, 처리결과는 빈칸으로 만들어집니다.</p>
+<p><code>setValues()</code>는 여러 값을 한 번에 씁니다. STEP 5의 <code>getValues()</code>가 여러 값을 한 번에 읽기였다면, 이번에는 여러 값을 한 번에 쓰는 방법까지 연결됩니다.</p>
+<h3>6-5. 개별 처리 함수 추가</h3>
+<p>다시 <b>Code.gs 맨 아래</b>에 추가합니다.</p>
+<pre><code class="language-javascript">function processOneByOne() {
+
+  console.log(
+    '===== 개별 처리 시작 ====='
+  );
+
+  try {
+
+    const startTime =
+      new Date().getTime();
+
+    const ss =
+      SpreadsheetApp.getActiveSpreadsheet();
+
+    const sheet =
+      ss.getSheetByName(
+        '성능테스트'
+      );
+
+    if (!sheet) {
+
+      throw new Error(
+        '성능테스트 시트를 찾을 수 없습니다.'
+      );
+    }
+
+    const lastRow =
+      sheet.getLastRow();
+
+    console.log(
+      '처리할 데이터 수: ' +
+      (lastRow - 1)
+    );
+
+    for (
+      let row = 2;
+      row &lt;= lastRow;
+      row++
+    ) {
+
+      const status =
+        sheet
+          .getRange(
+            row,
+            2
+          )
+          .getValue();
+
+      if (
+        status === '대기'
+      ) {
+
+        sheet
+          .getRange(
+            row,
+            3
+          )
+          .setValue(
+            '처리완료'
+          );
+      }
+    }
+
+    SpreadsheetApp.flush();
+
+    const endTime =
+      new Date().getTime();
+
+    const seconds =
+      (endTime - startTime) /
+      1000;
+
+    console.log(
+      '개별 처리 시간: ' +
+      seconds +
+      '초'
+    );
+
+    console.log(
+      '===== 개별 처리 완료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '개별 처리 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<h3>6-6. 개별 처리 실행</h3>
+<ol>
+<li>함수 선택 → <b>processOneByOne</b></li>
+<li>실행 ▶</li>
+<li>실행 기록에서 <b>개별 처리 시간</b> 확인</li>
+<li>성능테스트 시트 C열에 <b>처리완료</b>가 들어갔는지 확인</li>
+</ol>
+<div class="box">개별 처리는 한 행을 읽고 한 행을 쓰는 동작을 반복합니다. 반복할 때마다 Google Sheet에 계속 접근하는 구조입니다.</div>
+<h3>6-7. 비교를 위해 초기화</h3>
+<p>함수 선택에서 <b>createPerformanceTestData</b>를 다시 실행합니다. C열 결과가 지워지고 처음 상태로 돌아옵니다.</p>
+<h3>6-8. 배치 처리 함수 추가</h3>
+<p>다시 <b>Code.gs 맨 아래</b>에 추가합니다.</p>
+<pre><code class="language-javascript">function processInBatch() {
+
+  console.log(
+    '===== 배치 처리 시작 ====='
+  );
+
+  try {
+
+    const startTime =
+      new Date().getTime();
+
+    const ss =
+      SpreadsheetApp.getActiveSpreadsheet();
+
+    const sheet =
+      ss.getSheetByName(
+        '성능테스트'
+      );
+
+    if (!sheet) {
+
+      throw new Error(
+        '성능테스트 시트를 찾을 수 없습니다.'
+      );
+    }
+
+    const lastRow =
+      sheet.getLastRow();
+
+    const dataCount =
+      lastRow - 1;
+
+    console.log(
+      '처리할 데이터 수: ' +
+      dataCount
+    );
+
+    if (
+      dataCount &lt;= 0
+    ) {
+
+      console.log(
+        '처리할 데이터가 없습니다.'
+      );
+
+      return;
+    }
+
+    const statusData =
+      sheet
+        .getRange(
+          2,
+          2,
+          dataCount,
+          1
+        )
+        .getValues();
+
+    console.log(
+      '상태 데이터를 한 번에 읽었습니다.'
+    );
+
+    const resultData =
+      statusData.map(
+        function(rowData) {
+
+          if (
+            rowData[0] === '대기'
+          ) {
+
+            return [
+              '처리완료'
+            ];
+          }
+
+          return [
+            ''
+          ];
+        }
+      );
+
+    console.log(
+      '처리 결과를 코드 안에서 만들었습니다.'
+    );
+
+    sheet
+      .getRange(
+        2,
+        3,
+        resultData.length,
+        1
+      )
+      .setValues(
+        resultData
+      );
+
+    SpreadsheetApp.flush();
+
+    const endTime =
+      new Date().getTime();
+
+    const seconds =
+      (endTime - startTime) /
+      1000;
+
+    console.log(
+      '배치 처리 시간: ' +
+      seconds +
+      '초'
+    );
+
+    console.log(
+      '===== 배치 처리 완료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '배치 처리 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<h3>6-9. 배치 처리 실행</h3>
+<ol>
+<li>함수 선택 → <b>processInBatch</b></li>
+<li>실행 ▶</li>
+<li>실행 기록에서 <b>배치 처리 시간</b> 확인</li>
+<li>성능테스트 시트 C열에 처리완료가 한 번에 들어갔는지 확인</li>
+</ol>
+<div class="box tip">핵심은 for문 자체가 느리다는 뜻이 아닙니다. <b>Apps Script와 Google Sheet 사이의 반복적인 서비스 호출을 줄이는 것</b>이 중요합니다.</div>
+<p><code>SpreadsheetApp.flush()</code>는 대기 중인 시트 변경 작업을 반영하도록 요청합니다. 이번 실습에서는 처리시간 비교가 목적이므로 변경 작업이 반영된 시점까지 포함해 비교하기 위해 사용합니다.</p>
+<div class="flow">STEP 5: getValues()로 여러 행 한 번에 읽기 → STEP 6: getValues() + setValues()로 한 번에 읽고 쓰기 → 배치 처리</div>
+<h3>6-13. 바이브코딩 프롬프트</h3>
+<div class="box">
+현재 Google Apps Script 코드가 여러 행을 한 셀씩 반복해서 읽고 쓰고 있습니다.<br/>
+getValues()와 setValues()를 활용해 가능한 데이터를 한 번에 읽고 한 번에 쓰는 배치 처리 방식으로 개선해주세요.<br/>
+기존 기능은 삭제하지 마세요.<br/>
+주요 처리 단계와 처리 건수, 실행시간을 확인할 수 있도록 console.log()를 추가해주세요.<br/>
+수정된 전체 코드를 작성해주세요.
+</div>
+<h2>STEP 7. 중요한 설정값을 코드 밖에 보관하기</h2>
+<p>STEP 5에서는 스프레드시트 ID를 코드 안에 직접 넣었습니다. 이번에는 이 값을 <b>Script Properties</b>로 옮겨서 코드와 설정값을 분리합니다.</p>
+<div class="flow">시트 ID 확인 → 프로젝트 설정 → Script Properties 등록 → Code.gs에서 불러오기 → 정상 실행 → 오류 실험 → 복구</div>
+<p>Apps Script 프로젝트에서 사용하는 설정값을 따로 보관하는 공간입니다. 코드에서는 <code>PropertiesService</code>로 값을 불러옵니다.</p>
+<h3>7-2. 이번 단계에서 수정하는 곳</h3>
+<table>
+<thead><tr><th>위치</th><th>작업</th></tr></thead>
+<tbody>
+<tr><td>프로젝트 설정</td><td>SPREADSHEET_ID 등록</td></tr>
+<tr><td>Code.gs</td><td>STEP 5의 checkProgramStatus() 전체 교체</td></tr>
+<tr><td>Sidebar.html</td><td>수정하지 않음</td></tr>
+<tr><td>Guide.html</td><td>수정하지 않음</td></tr>
+</tbody>
+</table>
+<h3>7-3. 자신의 스프레드시트 ID 확인</h3>
+<p>구글시트 주소가 <code>https://docs.google.com/spreadsheets/d/1ABCxyz12345/edit</code>라면 <code>1ABCxyz12345</code>가 ID입니다. <b>/d/와 /edit 사이</b>만 복사합니다.</p>
+<div class="action setting">⚙️ 코드 실행 전 필수 설정: 프로젝트 설정 → 스크립트 속성 → SPREADSHEET_ID 등록 → 저장</div><h3>7-4. Script Properties 실제 등록</h3>
+<ol>
+<li>구글시트 → <b>확장 프로그램 → Apps Script</b></li>
+<li>Apps Script 왼쪽의 <b>톱니바퀴 모양 프로젝트 설정</b> 클릭</li>
+<li>화면을 아래로 내려 <b>스크립트 속성</b> 찾기</li>
+<li><b>스크립트 속성 추가</b> 클릭</li>
+<li>속성 칸에 <code>SPREADSHEET_ID</code> 입력</li>
+<li>값 칸에 <b>자신의 스프레드시트 ID</b> 입력</li>
+<li><b>스크립트 속성 저장</b> 클릭</li>
+</ol>
+<div class="box danger"><b>주소 전체를 넣지 않습니다.</b> /d/와 /edit 사이의 ID만 입력합니다. 철자와 밑줄까지 정확하게 <code>SPREADSHEET_ID</code>로 입력합니다.</div>
+<h3>7-5. Code.gs로 돌아오기</h3>
+<p>왼쪽 <b>편집기 → Code.gs</b>를 엽니다. 기존 <code>checkProgramStatus()</code> 함수만 통째로 지우고 아래 함수로 교체합니다. 다른 함수는 지우지 않습니다.</p>
+<pre><code class="language-javascript">function checkProgramStatus() {
+
+  console.log(
+    '===== 프로그램 운영 현황 확인 시작 ====='
+  );
+
+  try {
+
+    const SPREADSHEET_ID =
+      PropertiesService
+        .getScriptProperties()
+        .getProperty(
+          'SPREADSHEET_ID'
+        );
+
+    console.log(
+      'SPREADSHEET_ID 설정값을 확인했습니다.'
+    );
+
+    if (!SPREADSHEET_ID) {
+
+      throw new Error(
+        'SPREADSHEET_ID가 설정되어 있지 않습니다.'
+      );
+    }
+
+    const ss =
+      SpreadsheetApp.openById(
+        SPREADSHEET_ID
+      );
+
+    console.log(
+      '스프레드시트를 열었습니다.'
+    );
+
+    const sheet =
+      ss.getSheetByName(
+        '프로그램운영관리'
+      );
+
+    if (!sheet) {
+
+      throw new Error(
+        '프로그램운영관리 시트를 찾을 수 없습니다.'
+      );
+    }
+
+    console.log(
+      '프로그램운영관리 시트를 찾았습니다.'
+    );
+
+    const lastRow =
+      sheet.getLastRow();
+
+    console.log(
+      '현재 마지막 행: ' +
+      lastRow
+    );
+
+    if (lastRow &lt; 2) {
+
+      console.log(
+        '확인할 데이터가 없습니다.'
+      );
+
+      return {
+        total: 0,
+        waiting: 0,
+        progressing: 0,
+        completed: 0,
+        paused: 0
+      };
+    }
+
+    const data =
+      sheet
+        .getRange(
+          2,
+          1,
+          lastRow - 1,
+          10
+        )
+        .getValues();
+
+    console.log(
+      '전체 범위 데이터를 가져왔습니다.'
+    );
+
+    const validData =
+      data.filter(
+        function(rowData) {
+          return rowData[0] !== '';
+        }
+      );
+
+    console.log(
+      '실제 집계 대상: ' +
+      validData.length +
+      '건'
+    );
+
+    let waiting = 0;
+    let progressing = 0;
+    let completed = 0;
+    let paused = 0;
+
+    validData.forEach(
+      function(rowData) {
+
+        const status =
+          rowData[5];
+
+        if (
+          status === '대기'
+        ) {
+          waiting++;
+        }
+
+        else if (
+          status === '진행중'
+        ) {
+          progressing++;
+        }
+
+        else if (
+          status === '완료'
+        ) {
+          completed++;
+        }
+
+        else if (
+          status === '보류'
+        ) {
+          paused++;
+        }
+      }
+    );
+
+    const result = {
+      total: validData.length,
+      waiting: waiting,
+      progressing: progressing,
+      completed: completed,
+      paused: paused
+    };
+
+    console.log(
+      '전체: ' +
+      result.total +
+      '명'
+    );
+
+    console.log(
+      '대기: ' +
+      result.waiting +
+      '명'
+    );
+
+    console.log(
+      '진행중: ' +
+      result.progressing +
+      '명'
+    );
+
+    console.log(
+      '완료: ' +
+      result.completed +
+      '명'
+    );
+
+    console.log(
+      '보류: ' +
+      result.paused +
+      '명'
+    );
+
+    console.log(
+      '===== 프로그램 운영 현황 확인 완료 ====='
+    );
+
+    return result;
+
+  } catch (error) {
+
+    console.error(
+      '운영 현황 확인 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<h3>7-6. 정상 실행 확인</h3>
+<ol>
+<li>Code.gs 저장</li>
+<li>함수 선택 → <b>checkProgramStatus</b></li>
+<li>실행 ▶</li>
+<li>실행 기록에서 전체·대기·진행중·완료·보류 로그 확인</li>
+</ol>
+<h3>7-7. 사이드바도 확인</h3>
+<p>구글시트 → <b>📋 복지 프로그램 관리 → 업무 패널 열기</b> → <b>운영 현황 확인</b>. 결과가 STEP 5와 동일하게 표시되어야 합니다.</p>
+<h3>7-8. 시간 기반 트리거도 유지된다</h3>
+<p>STEP 5에서 만든 트리거가 <code>checkProgramStatus()</code>를 실행하고 있었다면 새로 만들 필요가 없습니다. 함수 이름을 유지했기 때문에 Script Properties에서 ID를 읽는 새 코드로 그대로 실행됩니다.</p>
+<h3>7-9. 일부러 오류 만들기</h3>
+<ol>
+<li>프로젝트 설정 → 스크립트 속성</li>
+<li><code>SPREADSHEET_ID</code>를 잠시 <code>SPREADSHEET_I</code>로 변경</li>
+<li><b>스크립트 속성 저장</b></li>
+<li>편집기 → Code.gs → checkProgramStatus 실행</li>
+<li><code>SPREADSHEET_ID가 설정되어 있지 않습니다.</code> 오류 확인</li>
+</ol>
+<h3>7-10. 반드시 복구</h3>
+<ol>
+<li>프로젝트 설정 → 스크립트 속성</li>
+<li><code>SPREADSHEET_I</code>를 <code>SPREADSHEET_ID</code>로 다시 수정</li>
+<li><b>스크립트 속성 저장</b></li>
+<li>checkProgramStatus 다시 실행</li>
+<li>정상 집계 결과 확인</li>
+</ol>
+<div class="box warn">Script Properties는 설정값을 코드와 분리해 관리하기 위한 기능입니다. “아무도 볼 수 없는 비밀 금고”라고 설명하면 안 됩니다. 프로젝트에 충분한 접근 권한이 있는 사람은 설정에 접근할 수 있습니다.</div>
+<h3>7-12. 바이브코딩 프롬프트</h3>
+<div class="box">
+현재 Google Apps Script 코드 안에 스프레드시트 ID가 직접 입력되어 있습니다.<br/>
+PropertiesService와 Script Properties를 사용해서 스프레드시트 ID를 코드와 분리해주세요.<br/>
+SPREADSHEET_ID라는 이름으로 값을 불러오게 해주세요.<br/>
+설정값이 없으면 이해할 수 있는 오류 메시지를 표시해주세요.<br/>
+기존 집계 기능, 사이드바 기능, 시간 기반 트리거 기능은 삭제하거나 변경하지 마세요.<br/>
+주요 단계마다 console.log()를 넣고 수정된 전체 코드를 작성해주세요.
+</div>
+<div class="box tip"><b>STEP 7 핵심</b><br/>설정값을 코드 안에 직접 적어두기보다 Script Properties에 분리해두고 필요할 때 PropertiesService로 불러올 수 있습니다.</div>
+<h2>STEP 8. Google Drive 업무 폴더 자동 생성하기</h2>
+<p>이번에도 새 파일을 만드는 것이 아닙니다. <b>STEP 1에서 만든 같은 구글 스프레드시트와 같은 Apps Script 프로젝트</b>에서 계속 진행합니다.</p>
+<div class="flow">이용자 행 선택 → 사용자 정의 메뉴 실행 → Drive 폴더 생성 → 폴더 URL 가져오기 → J열 파일링크 저장</div>
+<h3>8-1. Google Drive 상위 폴더 만들기</h3>
+<ol>
+<li>Google Drive 열기</li>
+<li><b>새로 만들기 → 새 폴더</b></li>
+<li>폴더 이름 예: <code>사회복지_프로그램_이용자파일</code></li>
+<li>폴더를 열고 주소창에서 <code>/folders/</code> 뒤의 값을 복사</li>
+</ol>
+<div class="box">복사한 값이 <b>FOLDER_ID</b>입니다.</div>
+<div class="action setting">⚙️ 코드 실행 전 필수 설정: Drive 상위 폴더 생성 → 폴더 ID 복사 → FOLDER_ID 등록 → 저장</div><h3>8-2. Script Properties에 FOLDER_ID 등록</h3>
+<ol>
+<li>구글시트 → <b>확장 프로그램 → Apps Script</b></li>
+<li>왼쪽 톱니바퀴 <b>프로젝트 설정</b></li>
+<li>아래로 내려 <b>스크립트 속성</b></li>
+<li><b>스크립트 속성 추가</b></li>
+<li>속성: <code>FOLDER_ID</code></li>
+<li>값: 방금 복사한 Drive 폴더 ID</li>
+<li><b>스크립트 속성 저장</b></li>
+</ol>
+<p>STEP 7의 <code>SPREADSHEET_ID</code>는 지우지 않습니다.</p>
+<h3>8-3. Drive API는 따로 켜지 않습니다</h3>
+<div class="box tip">
+이번 실습은 Apps Script 기본 서비스인 <code>DriveApp</code>을 사용합니다. 별도의 Drive API 활성화는 필요하지 않습니다. 처음 실행할 때 Google Drive 접근 권한 승인이 나타날 수 있는데, 이것은 API 활성화가 아니라 <b>권한 승인</b>입니다.
+</div>
+<h3>8-4. 기존 onOpen() 함수 전체 교체</h3>
+<p>Code.gs에서 기존 <code>onOpen()</code> 함수만 통째로 지우고 아래 코드로 교체합니다. 다른 함수는 지우지 않습니다.</p>
+<pre><code class="language-javascript">function onOpen() {
+
+  const ui =
+    SpreadsheetApp.getUi();
+
+  ui.createMenu(
+    '📋 복지 프로그램 관리'
+  )
+
+    .addItem(
+      '안내 메시지 보기',
+      'showWelcomeAlert'
+    )
+
+    .addItem(
+      '담당자 입력하기',
+      'showManagerPrompt'
+    )
+
+    .addItem(
+      '작업 완료 알림',
+      'showToastMessage'
+    )
+
+    .addSeparator()
+
+    .addItem(
+      '업무 안내창 열기',
+      'showModalGuide'
+    )
+
+    .addItem(
+      '업무 패널 열기',
+      'showSidebar'
+    )
+
+    .addSeparator()
+
+    .addItem(
+      '선택 이용자 폴더 만들기',
+      'createClientFolderForSelectedRow'
+    )
+
+    .addToUi();
+}</code></pre>
+<h3>8-5. Code.gs 맨 아래에 Drive 폴더 생성 함수 추가</h3>
+<pre><code class="language-javascript">function createClientFolderForSelectedRow() {
+
+  console.log(
+    '===== 이용자 폴더 생성 시작 ====='
+  );
+
+  try {
+
+    const ss =
+      SpreadsheetApp.getActiveSpreadsheet();
+
+    const sheet =
+      ss.getActiveSheet();
+
+    console.log(
+      '현재 시트: ' +
+      sheet.getName()
+    );
+
+    if (
+      sheet.getName() !==
+      '프로그램운영관리'
+    ) {
+
+      throw new Error(
+        '프로그램운영관리 시트에서 실행해주세요.'
+      );
+    }
+
+    const activeRange =
+      sheet.getActiveRange();
+
+    if (!activeRange) {
+
+      throw new Error(
+        '먼저 이용자 행의 셀을 선택해주세요.'
+      );
+    }
+
+    const selectedRow =
+      activeRange.getRow();
+
+    console.log(
+      '선택한 행: ' +
+      selectedRow
+    );
+
+    if (
+      selectedRow === 1
+    ) {
+
+      throw new Error(
+        '제목 행이 아닌 이용자 데이터 행을 선택해주세요.'
+      );
+    }
+
+    const rowData =
+      sheet
+        .getRange(
+          selectedRow,
+          1,
+          1,
+          10
+        )
+        .getValues()[0];
+
+    const receiptNumber =
+      rowData[0];
+
+    const clientName =
+      rowData[1];
+
+    const programName =
+      rowData[2];
+
+    const existingFolderLink =
+      rowData[9];
+
+    console.log(
+      '접수번호: ' +
+      receiptNumber
+    );
+
+    console.log(
+      '이용자명: ' +
+      clientName
+    );
+
+    console.log(
+      '프로그램명: ' +
+      programName
+    );
+
+    if (!receiptNumber) {
+
+      throw new Error(
+        '선택한 행에 접수번호가 없습니다.'
+      );
+    }
+
+    if (!clientName) {
+
+      throw new Error(
+        '선택한 행에 이용자명이 없습니다.'
+      );
+    }
+
+    if (!programName) {
+
+      throw new Error(
+        '선택한 행에 프로그램명이 없습니다.'
+      );
+    }
+
+    if (existingFolderLink) {
+
+      throw new Error(
+        '이미 파일링크가 등록되어 있습니다.'
+      );
+    }
+
+    const FOLDER_ID =
+      PropertiesService
+        .getScriptProperties()
+        .getProperty(
+          'FOLDER_ID'
+        );
+
+    if (!FOLDER_ID) {
+
+      throw new Error(
+        'FOLDER_ID가 설정되어 있지 않습니다.'
+      );
+    }
+
+    console.log(
+      'FOLDER_ID를 확인했습니다.'
+    );
+
+    const parentFolder =
+      DriveApp.getFolderById(
+        FOLDER_ID
+      );
+
+    console.log(
+      '상위 Drive 폴더를 찾았습니다.'
+    );
+
+    const folderName =
+      receiptNumber +
+      '_' +
+      clientName +
+      '_' +
+      programName;
+
+    console.log(
+      '생성할 폴더명: ' +
+      folderName
+    );
+
+    const newFolder =
+      parentFolder.createFolder(
+        folderName
+      );
+
+    console.log(
+      '새 폴더를 생성했습니다.'
+    );
+
+    const folderUrl =
+      newFolder.getUrl();
+
+    console.log(
+      '폴더 URL: ' +
+      folderUrl
+    );
+
+    sheet
+      .getRange(
+        selectedRow,
+        10
+      )
+      .setValue(
+        folderUrl
+      );
+
+    console.log(
+      'J열 파일링크에 URL을 저장했습니다.'
+    );
+
+    ss.toast(
+      clientName +
+      ' 이용자 폴더를 만들었습니다.',
+      'Drive 폴더 생성 완료',
+      4
+    );
+
+    console.log(
+      '===== 이용자 폴더 생성 정상 종료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '이용자 폴더 생성 오류: ' +
+      error.message
+    );
+
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        '폴더 생성 오류\n\n' +
+        error.message
+      );
+
+    throw error;
+  }
+}</code></pre>
+<h3>8-6. getRange 숫자 다시 이해하기</h3>
+<pre><code class="language-javascript">getRange(
+  selectedRow,
+  1,
+  1,
+  10
+)</code></pre>
+<p><b>순서:</b> 시작 행, 시작 열, 가져올 행 개수, 가져올 열 개수</p>
+<table>
+<thead><tr><th>값</th><th>뜻</th></tr></thead>
+<tbody>
+<tr><td>selectedRow</td><td>선택한 행에서 시작</td></tr>
+<tr><td>1</td><td>A열부터</td></tr>
+<tr><td>1</td><td>한 행만</td></tr>
+<tr><td>10</td><td>A~J 10개 열</td></tr>
+</tbody>
+</table>
+<p>예를 들어 7행을 선택했다면 <code>getRange(7, 1, 1, 10)</code>은 <b>7행의 A~J를 가져와라</b>는 뜻입니다.</p>
+<h3>8-7. getValues()[0]는 무엇인가?</h3>
+<p><code>getValues()</code>는 표 형태로 값을 가져옵니다. 한 행만 가져와도 바깥 배열이 있으므로 <code>[0]</code>을 붙여 첫 번째 행을 꺼냅니다.</p>
+<pre><code>A→rowData[0]
+B→rowData[1]
+C→rowData[2]
+...
+J→rowData[9]</code></pre>
+<div class="action refresh">🔄 중요: STEP 8에서 onOpen() 메뉴를 수정했으므로 Code.gs 저장 후 구글시트를 반드시 새로고침합니다.</div><h3>8-8. 저장하고 메뉴 확인</h3>
+<ol>
+<li>Code.gs 저장</li>
+<li>구글시트로 돌아가기</li>
+<li><b>브라우저 새로고침</b></li>
+<li><b>📋 복지 프로그램 관리</b> 메뉴 열기</li>
+<li><b>선택 이용자 폴더 만들기</b>가 보이는지 확인</li>
+</ol>
+<div class="action no-run">🚫 createClientFolderForSelectedRow()는 실행 ▶ 버튼 대신, 이용자 행을 선택한 뒤 사용자 정의 메뉴에서 실행합니다.</div><h3>8-9. 실제 폴더 생성</h3>
+<ol>
+<li><code>프로그램운영관리</code> 시트에서 J열이 비어 있는 이용자 행의 아무 셀이나 클릭</li>
+<li><b>📋 복지 프로그램 관리 → 선택 이용자 폴더 만들기</b></li>
+<li>처음이면 Drive 접근 권한 승인</li>
+<li>Drive 상위 폴더 안에 <code>접수번호_이용자명_프로그램명</code> 폴더가 생겼는지 확인</li>
+<li>같은 행 J열에 폴더 URL이 들어갔는지 확인</li>
+</ol>
+<h3>8-10. 오류 확인</h3>
+<ul>
+<li>같은 행에서 다시 실행 → 이미 파일링크가 등록되어 있다는 오류</li>
+<li>1행에서 실행 → 제목 행 오류</li>
+<li>성능테스트 시트에서 실행 → 프로그램운영관리 시트에서 실행하라는 오류</li>
+<li>FOLDER_ID 미설정 → FOLDER_ID 설정 오류</li>
+</ul>
+<h2>STEP 9. 업무 시트 서식과 입력 규칙 자동화하기</h2>
+<p>이번에도 <b>STEP 1에서 만든 프로그램운영관리 시트</b>를 계속 사용합니다. STEP 6의 성능테스트 시트는 사용하지 않습니다.</p>
+<div class="flow">K열 후속확인 추가 → 제목행 서식 → 날짜 형식 → 상태 드롭다운 → 체크박스 → 필터 → 열 너비·줄바꿈</div>
+<h3>9-1. 이번 단계 목적</h3>
+<p>단순히 시트를 예쁘게 꾸미는 것이 아니라 <b>입력 실수를 줄이고 데이터를 일정한 형식으로 유지</b>하는 것이 목적입니다.</p>
+<h3>9-2. K열 추가</h3>
+<p>현재 A~J 구조 뒤에 K열 <b>후속확인</b>을 추가합니다. 기존 J열 파일링크 위치는 그대로이므로 STEP 1~8 기능은 영향을 받지 않습니다.</p>
+<h3>9-3. Code.gs 맨 아래에 전체 함수 추가</h3>
+<p>기존 코드는 지우지 않습니다. 아래 함수를 <b>Code.gs 가장 아래에 그대로 복사·붙여넣기</b>합니다.</p>
+<pre><code class="language-javascript">function formatProgramSheet() {
+
+  console.log(
+    '===== 업무 시트 서식 정리 시작 ====='
+  );
+
+  try {
+
+    const ss =
+      SpreadsheetApp.getActiveSpreadsheet();
+
+    const sheet =
+      ss.getSheetByName(
+        '프로그램운영관리'
+      );
+
+    if (!sheet) {
+
+      throw new Error(
+        '프로그램운영관리 시트를 찾을 수 없습니다.'
+      );
+    }
+
+    console.log(
+      '프로그램운영관리 시트를 찾았습니다.'
+    );
+
+    // 1. K열 제목
+    sheet
+      .getRange('K1')
+      .setValue('후속확인');
+
+    console.log(
+      'K열 후속확인 제목을 설정했습니다.'
+    );
+
+    // 2. 제목 행 서식
+    const headerRange =
+      sheet.getRange(
+        1,
+        1,
+        1,
+        11
+      );
+
+    headerRange
+      .setFontWeight('bold')
+      .setFontColor('#ffffff')
+      .setBackground('#355E3B')
+      .setHorizontalAlignment('center');
+
+    console.log(
+      '제목 행 서식을 적용했습니다.'
+    );
+
+    // 3. 첫 행 고정
+    sheet.setFrozenRows(1);
+
+    console.log(
+      '첫 번째 행을 고정했습니다.'
+    );
+
+    // 4. 날짜 형식
+    sheet
+      .getRange('D2:D')
+      .setNumberFormat('yyyy-MM-dd');
+
+    sheet
+      .getRange('G2:G')
+      .setNumberFormat('yyyy-MM-dd');
+
+    sheet
+      .getRange('H2:H')
+      .setNumberFormat('yyyy-MM-dd');
+
+    console.log(
+      '날짜 형식을 yyyy-MM-dd로 정리했습니다.'
+    );
+
+    // 5. F열 상태 드롭다운
+    const statusRule =
+      SpreadsheetApp
+        .newDataValidation()
+        .requireValueInList(
+          [
+            '대기',
+            '진행중',
+            '완료',
+            '보류'
+          ],
+          true
+        )
+        .setAllowInvalid(false)
+        .build();
+
+    sheet
+      .getRange('F2:F1000')
+      .setDataValidation(
+        statusRule
+      );
+
+    console.log(
+      '상태 드롭다운을 설정했습니다.'
+    );
+
+    // 6. K열 체크박스 규칙
+    const checkboxRange =
+      sheet.getRange(
+        'K2:K1000'
+      );
+
+    const checkboxRule =
+      SpreadsheetApp
+        .newDataValidation()
+        .requireCheckbox()
+        .build();
+
+    const checkboxRules =
+      Array.from(
+        {
+          length:
+            checkboxRange.getNumRows()
+        },
+        function() {
+          return [
+            checkboxRule
+          ];
+        }
+      );
+
+    checkboxRange
+      .setDataValidations(
+        checkboxRules
+      );
+
+    console.log(
+      '후속확인 체크박스를 설정했습니다.'
+    );
+
+    // 7. 기존 필터 제거
+    const existingFilter =
+      sheet.getFilter();
+
+    if (
+      existingFilter
+    ) {
+
+      existingFilter.remove();
+
+      console.log(
+        '기존 필터를 제거했습니다.'
+      );
+    }
+
+    // 8. A~K 필터 적용
+    const lastRow =
+      Math.max(
+        sheet.getLastRow(),
+        2
+      );
+
+    sheet
+      .getRange(
+        1,
+        1,
+        lastRow,
+        11
+      )
+      .createFilter();
+
+    console.log(
+      'A~K 범위에 필터를 설정했습니다.'
+    );
+
+    // 9. 열 너비
+    sheet.setColumnWidth(1, 90);
+    sheet.setColumnWidth(2, 110);
+    sheet.setColumnWidth(3, 170);
+    sheet.setColumnWidth(4, 100);
+    sheet.setColumnWidth(5, 100);
+    sheet.setColumnWidth(6, 90);
+    sheet.setColumnWidth(7, 100);
+    sheet.setColumnWidth(8, 100);
+    sheet.setColumnWidth(9, 200);
+    sheet.setColumnWidth(10, 240);
+    sheet.setColumnWidth(11, 90);
+
+    console.log(
+      '열 너비를 정리했습니다.'
+    );
+
+    // 10. 긴 내용 줄바꿈
+    sheet
+      .getRange('I:J')
+      .setWrap(true);
+
+    console.log(
+      '비고와 파일링크에 줄바꿈을 적용했습니다.'
+    );
+
+    SpreadsheetApp.flush();
+
+    ss.toast(
+      '업무 시트 서식이 정리되었습니다.',
+      '서식 정리 완료',
+      4
+    );
+
+    console.log(
+      '===== 업무 시트 서식 정리 완료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '업무 시트 서식 정리 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<div class="action run">✅ formatProgramSheet()는 실행 ▶ 버튼으로 직접 실행합니다. 새로고침은 필요 없습니다.</div><h3>9-4. 실행 방법</h3>
+<ol>
+<li>Code.gs 저장</li>
+<li>함수 선택 → <b>formatProgramSheet</b></li>
+<li><b>실행 ▶</b></li>
+<li>구글시트로 돌아가 <code>프로그램운영관리</code> 시트 확인</li>
+</ol>
+<h3>9-5. 실행 후 확인할 것</h3>
+<ul>
+<li>K1에 <b>후속확인</b> 생성</li>
+<li>K2:K1000에 체크박스</li>
+<li>F열에 대기/진행중/완료/보류 드롭다운</li>
+<li>D/G/H 날짜가 yyyy-MM-dd 형식</li>
+<li>첫 행 고정</li>
+<li>A~K 필터 적용</li>
+<li>열 너비와 I/J 줄바꿈 정리</li>
+</ul>
+<p>F열을 드롭다운으로 제한하면 <code>완료</code>, <code>완료함</code>, <code>완 료</code>처럼 값이 제각각 입력되는 문제를 줄일 수 있습니다.</p>
+<p>체크하면 <code>true</code>, 체크하지 않으면 <code>false</code>로 처리할 수 있습니다. 나중에 후속확인 안 된 이용자만 찾는 자동화로 확장할 수 있습니다.</p>
+<h3>9-8. 같은 함수를 다시 실행해보기</h3>
+<p>K열 체크박스 하나를 체크한 뒤 <code>formatProgramSheet()</code>를 다시 실행해봅니다. 제목이 중복 생성되지 않고 필터도 중복되지 않아야 합니다.</p>
+<div class="box tip">
+개발에서는 같은 자동화를 다시 실행해도 중복되거나 망가지지 않는 성질을 <b>멱등성(Idempotency)</b>이라고 부르기도 합니다. 용어를 외울 필요는 없고, <b>“같은 기능을 다시 실행해도 문제가 없게 만든다”</b> 정도로 이해하면 됩니다.
+</div>
+<p>STEP 6에서 배운 것처럼 가능한 경우 여러 셀을 한 번에 처리합니다. K2:K1000 체크박스 규칙도 <code>setDataValidations()</code>로 범위 전체에 한 번에 적용합니다.</p>
+<h3>9-10. 바이브코딩 프롬프트</h3>
+<div class="box">
+현재 프로그램운영관리 Google Sheet를 업무용으로 표준화하고 싶습니다.<br/>
+1행 제목 서식, 첫 행 고정, 날짜 형식, 상태 드롭다운, K열 후속확인 체크박스, A~K 필터, 열 너비, 줄바꿈을 설정해주세요.<br/>
+기존 데이터와 STEP 1~8 기능은 삭제하거나 변경하지 마세요.<br/>
+주요 단계마다 console.log()를 넣고, 여러 번 실행해도 중복이나 오류가 발생하지 않도록 작성해주세요.<br/>
+수정된 전체 함수를 작성해주세요.
+</div>
+<h2>STEP 10. 프로그램 운영 요약 보고서 만들기</h2>
+<p>기존 <b>프로그램운영관리</b> 데이터를 이용해 같은 스프레드시트 안에 <b>프로그램요약보고서</b> 탭을 만듭니다.</p>
+<div class="action setting">⚙️ 새로운 설정은 없습니다. 단, STEP 7에서 등록한 <code>SPREADSHEET_ID</code>가 정상이어야 합니다.</div>
+<h3>10-1. Code.gs 맨 아래에 보고서 생성 함수 추가</h3>
+<p>기존 코드는 지우지 않습니다. 아래 함수 전체를 Code.gs 가장 아래에 붙여넣고 저장합니다.</p>
+<pre><code class="language-javascript">function createProgramSummaryReport() {
+
+  console.log('===== 프로그램 운영 요약 보고서 생성 시작 =====');
+
+  try {
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    console.log('STEP 5에서 만든 checkProgramStatus() 함수를 실행합니다.');
+
+    // STEP 5에서 만든 기존 집계 함수를 다시 사용합니다.
+    // 이 함수는 전체/대기/진행중/완료/보류 인원수를 계산해 돌려줍니다.
+    const result = checkProgramStatus();
+
+    console.log(
+      '집계 결과: ' +
+      JSON.stringify(result)
+    );
+
+    let reportSheet =
+      ss.getSheetByName('프로그램요약보고서');
+
+    console.log(
+      '프로그램요약보고서 시트 존재 여부: ' +
+      Boolean(reportSheet)
+    );
+
+    // 보고서 시트가 없으면 같은 스프레드시트 안에 새 탭을 만듭니다.
+    if (!reportSheet) {
+
+      reportSheet =
+        ss.insertSheet('프로그램요약보고서');
+
+      console.log(
+        '프로그램요약보고서 시트를 새로 만들었습니다.'
+      );
+
+    } else {
+
+      // 기존 보고서가 있다면 병합된 셀을 먼저 풀어
+      // 다시 만들 때 구조가 꼬이지 않도록 합니다.
+      reportSheet
+        .getDataRange()
+        .breakApart();
+
+      console.log(
+        '기존 보고서의 병합을 해제했습니다.'
+      );
+
+      // 기존 내용과 서식을 지우고 같은 탭을 다시 사용합니다.
+      reportSheet.clear();
+
+      console.log(
+        '기존 보고서 내용을 초기화했습니다.'
+      );
+    }
+
+    // A1:D2를 하나의 큰 제목 영역으로 사용합니다.
+    const titleRange =
+      reportSheet.getRange('A1:D2');
+
+    titleRange.merge();
+
+    titleRange
+      .setValue('프로그램 운영 현황 보고서')
+      .setFontSize(16)
+      .setFontWeight('bold')
+      .setHorizontalAlignment('center')
+      .setVerticalAlignment('middle');
+
+    console.log(
+      'A1:D2 제목 영역 병합 및 제목 입력 완료'
+    );
+
+    // 집계 결과를 표 형태로 준비합니다.
+    const reportData = [
+      ['구분', '인원'],
+      ['전체', result.total],
+      ['대기', result.waiting],
+      ['진행중', result.progressing],
+      ['완료', result.completed],
+      ['보류', result.paused]
+    ];
+
+    console.log(
+      '보고서에 입력할 데이터: ' +
+      JSON.stringify(reportData)
+    );
+
+    // STEP 6에서 배운 것처럼 한 셀씩 쓰지 않고
+    // A4:B9 범위에 표 전체를 한 번에 입력합니다.
+    reportSheet
+      .getRange(
+        4,
+        1,
+        reportData.length,
+        2
+      )
+      .setValues(reportData);
+
+    console.log(
+      'A4:B9 운영 현황 표 입력 완료'
+    );
+
+    // 표 제목 줄의 서식을 정리합니다.
+    reportSheet
+      .getRange('A4:B4')
+      .setFontWeight('bold')
+      .setBackground('#D9EAD3');
+
+    reportSheet.setColumnWidth(1, 160);
+    reportSheet.setColumnWidth(2, 100);
+    reportSheet.setRowHeight(1, 30);
+    reportSheet.setRowHeight(2, 30);
+
+    console.log(
+      '보고서 서식 적용 완료'
+    );
+
+    SpreadsheetApp.flush();
+
+    ss.toast(
+      '프로그램 운영 요약 보고서를 만들었습니다.',
+      '보고서 생성 완료',
+      4
+    );
+
+    console.log(
+      '===== 프로그램 운영 요약 보고서 생성 정상 종료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '보고서 생성 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<div class="action run">✅ 함수 선택 → <code>createProgramSummaryReport</code> → 실행 ▶</div>
+<p><b>정상 결과:</b> 같은 스프레드시트 안에 <code>프로그램요약보고서</code> 탭이 생기고 A1:D2 제목이 병합되며 A4:B9에 운영 현황이 표시됩니다.</p>
+<h3>10-2. 병합 해제 함수 추가</h3>
+<pre><code class="language-javascript">function unmergeReportTitle() {
+
+  console.log('===== 보고서 제목 병합 해제 시작 =====');
+
+  try {
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    const sheet =
+      ss.getSheetByName('프로그램요약보고서');
+
+    if (!sheet) {
+      throw new Error(
+        '프로그램요약보고서 시트를 찾을 수 없습니다. 먼저 createProgramSummaryReport()를 실행해주세요.'
+      );
+    }
+
+    console.log(
+      '프로그램요약보고서 시트를 찾았습니다.'
+    );
+
+    // 보고서 제목 영역 A1:D2의 병합을 풉니다.
+    sheet
+      .getRange('A1:D2')
+      .breakApart();
+
+    console.log(
+      'A1:D2 병합을 해제했습니다.'
+    );
+
+    ss.toast(
+      '보고서 제목 병합을 해제했습니다.',
+      '병합 해제',
+      3
+    );
+
+    console.log(
+      '===== 보고서 제목 병합 해제 정상 종료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '병합 해제 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<div class="action run">✅ 함수 선택 → <code>unmergeReportTitle</code> → 실행 ▶</div>
+<p><b>정상 결과:</b> 프로그램요약보고서의 A1:D2 병합이 풀립니다.</p>
+<h3>10-3. 다시 병합하는 함수 추가</h3>
+<pre><code class="language-javascript">function mergeReportTitle() {
+
+  console.log('===== 보고서 제목 다시 병합 시작 =====');
+
+  try {
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    const sheet =
+      ss.getSheetByName('프로그램요약보고서');
+
+    if (!sheet) {
+      throw new Error(
+        '프로그램요약보고서 시트를 찾을 수 없습니다. 먼저 createProgramSummaryReport()를 실행해주세요.'
+      );
+    }
+
+    console.log(
+      '프로그램요약보고서 시트를 찾았습니다.'
+    );
+
+    const titleRange =
+      sheet.getRange('A1:D2');
+
+    // 현재 병합 상태와 관계없이 한 번 풀고 다시 합쳐
+    // 반복 실행해도 구조가 꼬이지 않도록 합니다.
+    titleRange.breakApart();
+
+    console.log(
+      '기존 제목 병합 상태를 정리했습니다.'
+    );
+
+    titleRange.merge();
+
+    titleRange
+      .setValue('프로그램 운영 현황 보고서')
+      .setFontSize(16)
+      .setFontWeight('bold')
+      .setHorizontalAlignment('center')
+      .setVerticalAlignment('middle');
+
+    console.log(
+      'A1:D2를 다시 병합하고 제목을 입력했습니다.'
+    );
+
+    ss.toast(
+      '보고서 제목을 다시 병합했습니다.',
+      '병합 완료',
+      3
+    );
+
+    console.log(
+      '===== 보고서 제목 다시 병합 정상 종료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '병합 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<div class="action run">✅ 함수 선택 → <code>mergeReportTitle</code> → 실행 ▶</div>
+<p><b>정상 결과:</b> A1:D2가 다시 하나의 제목 영역으로 합쳐집니다.</p>
+<h3>10-4. 마지막 재실행 확인</h3>
+<div class="checkfast">
+① <code>createProgramSummaryReport()</code> 다시 실행<br/>
+② 새 보고서 탭이 또 생기지 않는지 확인<br/>
+③ 기존 <code>프로그램요약보고서</code>가 같은 형태로 다시 만들어지면 정상
+</div>
+<h2>STEP 11. 운영 현황 보고서를 PDF로 저장하기</h2>
+<p>STEP 10에서 만든 프로그램요약보고서를 최신 상태로 다시 만든 뒤 PDF로 변환해 Google Drive에 저장합니다.</p>
+<div class="action setting">⚙️ 새 설정은 없습니다. STEP 8에서 등록한 <code>FOLDER_ID</code>가 필요합니다.</div>
+<h3>11-0. 먼저 STEP 10 보고서 함수 보완</h3>
+<p><b>작업 파일:</b> Code.gs<br/>
+<b>기존 코드:</b> 다른 함수는 모두 유지<br/>
+<b>작업:</b> 기존 <code>createProgramSummaryReport()</code> 함수만 처음부터 끝까지 삭제하고 아래 함수 전체로 교체합니다.</p>
+<p><b>왜 수정하나요?</b><br/>
+기존 코드에서 <code>getDataRange().breakApart()</code>를 사용하면 이미 병합된 제목 영역 일부만 선택되는 상황에서 “해당 범위의 모든 셀을 선택해야 합니다” 오류가 날 수 있습니다. 이제 <code>A1:D2</code>를 정확히 지정해 병합을 해제하도록 수정합니다.</p>
+<pre><code class="language-javascript">function createProgramSummaryReport() {
+
+  console.log('===== 프로그램 운영 요약 보고서 생성 시작 =====');
+
+  try {
+
+    const ss =
+      SpreadsheetApp.getActiveSpreadsheet();
+
+    console.log(
+      '현재 스프레드시트: ' +
+      ss.getName()
+    );
+
+    // STEP 5에서 만든 운영 현황 집계 함수를 다시 사용합니다.
+    console.log(
+      '운영 현황 집계를 시작합니다.'
+    );
+
+    const result =
+      checkProgramStatus();
+
+    console.log(
+      '집계 결과: ' +
+      JSON.stringify(result)
+    );
+
+    // 프로그램요약보고서 시트를 찾습니다.
+    let reportSheet =
+      ss.getSheetByName(
+        '프로그램요약보고서'
+      );
+
+    // 보고서 시트가 없으면 새로 만듭니다.
+    if (!reportSheet) {
+
+      reportSheet =
+        ss.insertSheet(
+          '프로그램요약보고서'
+        );
+
+      console.log(
+        '프로그램요약보고서 시트를 새로 만들었습니다.'
+      );
+
+    } else {
+
+      console.log(
+        '기존 프로그램요약보고서 시트를 다시 사용합니다.'
+      );
+
+      // 기존 제목 영역 전체를 정확히 지정하여 병합을 해제합니다.
+      // getDataRange().breakApart()는 사용하지 않습니다.
+      const oldTitleRange =
+        reportSheet.getRange(
+          'A1:D2'
+        );
+
+      oldTitleRange.breakApart();
+
+      console.log(
+        'A1:D2 기존 병합을 해제했습니다.'
+      );
+
+      // 기존 보고서의 내용과 서식을 초기화합니다.
+      reportSheet.clear();
+
+      console.log(
+        '기존 보고서를 초기화했습니다.'
+      );
+    }
+
+    // -----------------------------------
+    // 제목 영역 만들기
+    // -----------------------------------
+
+    const titleRange =
+      reportSheet.getRange(
+        'A1:D2'
+      );
+
+    titleRange.merge();
+
+    titleRange
+      .setValue(
+        '프로그램 운영 현황 보고서'
+      )
+      .setFontSize(16)
+      .setFontWeight('bold')
+      .setHorizontalAlignment(
+        'center'
+      )
+      .setVerticalAlignment(
+        'middle'
+      );
+
+    console.log(
+      'A1:D2 제목 병합 완료'
+    );
+
+    // -----------------------------------
+    // 운영 현황 표 데이터
+    // -----------------------------------
+
+    const reportData = [
+      ['구분', '인원'],
+      ['전체', result.total],
+      ['대기', result.waiting],
+      ['진행중', result.progressing],
+      ['완료', result.completed],
+      ['보류', result.paused]
+    ];
+
+    console.log(
+      '보고서 데이터: ' +
+      JSON.stringify(reportData)
+    );
+
+    // A4:B9에 표 전체를 한 번에 입력합니다.
+    reportSheet
+      .getRange(
+        4,
+        1,
+        reportData.length,
+        2
+      )
+      .setValues(
+        reportData
+      );
+
+    console.log(
+      'A4:B9 운영 현황 표 입력 완료'
+    );
+
+    // -----------------------------------
+    // 표 서식
+    // -----------------------------------
+
+    reportSheet
+      .getRange(
+        'A4:B4'
+      )
+      .setFontWeight(
+        'bold'
+      )
+      .setBackground(
+        '#D9EAD3'
+      );
+
+    reportSheet
+      .getRange(
+        'A4:B9'
+      )
+      .setBorder(
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      )
+      .setHorizontalAlignment(
+        'center'
+      );
+
+    reportSheet.setColumnWidth(1, 160);
+    reportSheet.setColumnWidth(2, 100);
+    reportSheet.setColumnWidth(4, 260);
+
+    reportSheet.setRowHeight(1, 30);
+    reportSheet.setRowHeight(2, 30);
+
+    SpreadsheetApp.flush();
+
+    console.log(
+      '보고서 서식 적용 완료'
+    );
+
+    ss.toast(
+      '프로그램 운영 요약 보고서를 만들었습니다.',
+      '보고서 생성 완료',
+      4
+    );
+
+    console.log(
+      '===== 프로그램 운영 요약 보고서 생성 정상 종료 ====='
+    );
+
+    return result;
+
+  } catch (error) {
+
+    console.error(
+      '보고서 생성 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<div class="action run">✅ Code.gs 저장 → 함수 선택 <code>createProgramSummaryReport</code> → 실행 ▶</div>
+<p><b>정상 결과:</b> 프로그램요약보고서의 A1:D2 제목 병합 + A4:B9 운영 현황 표가 정상 생성됩니다.</p>
+<h3>11-1. PDF 생성 함수 교체</h3>
+<p><b>작업 파일:</b> Code.gs<br/>
+<b>기존 코드:</b> 다른 함수는 모두 유지<br/>
+<b>작업:</b> 기존 <code>createProgramSummaryPdf()</code> 함수만 처음부터 끝까지 삭제하고 아래 함수 전체로 교체합니다.</p>
+<pre><code class="language-javascript">function createProgramSummaryPdf() {
+
+  console.log(
+    '===== 프로그램 운영 보고서 PDF 생성 시작 ====='
+  );
+
+  try {
+
+    const ss =
+      SpreadsheetApp.getActiveSpreadsheet();
+
+    console.log(
+      '현재 스프레드시트: ' +
+      ss.getName()
+    );
+
+    // 1. 보고서를 최신 상태로 만듭니다.
+    console.log(
+      '최신 운영 현황 보고서를 먼저 생성합니다.'
+    );
+
+    createProgramSummaryReport();
+
+    console.log(
+      '운영 현황 보고서 최신화 완료'
+    );
+
+    // 2. 프로그램요약보고서 시트 확인
+    const reportSheet =
+      ss.getSheetByName(
+        '프로그램요약보고서'
+      );
+
+    if (!reportSheet) {
+      throw new Error(
+        '프로그램요약보고서 시트를 찾을 수 없습니다.'
+      );
+    }
+
+    console.log(
+      '프로그램요약보고서 시트를 찾았습니다.'
+    );
+
+    // 3. Drive 상위 폴더 ID 확인
+    const FOLDER_ID =
+      PropertiesService
+        .getScriptProperties()
+        .getProperty(
+          'FOLDER_ID'
+        );
+
+    if (!FOLDER_ID) {
+      throw new Error(
+        'FOLDER_ID가 설정되어 있지 않습니다. 프로젝트 설정의 스크립트 속성을 확인해주세요.'
+      );
+    }
+
+    console.log(
+      'FOLDER_ID 설정값을 확인했습니다.'
+    );
+
+    // 4. Drive 상위 폴더 열기
+    const parentFolder =
+      DriveApp.getFolderById(
+        FOLDER_ID
+      );
+
+    console.log(
+      'PDF를 저장할 Drive 상위 폴더를 찾았습니다.'
+    );
+
+    // 5. 운영보고서 폴더 찾기 또는 생성
+    const folders =
+      parentFolder.getFoldersByName(
+        '운영보고서'
+      );
+
+    let reportFolder;
+
+    if (folders.hasNext()) {
+
+      reportFolder =
+        folders.next();
+
+      console.log(
+        '기존 운영보고서 폴더를 사용합니다.'
+      );
+
+    } else {
+
+      reportFolder =
+        parentFolder.createFolder(
+          '운영보고서'
+        );
+
+      console.log(
+        '운영보고서 폴더를 새로 만들었습니다.'
+      );
+    }
+
+    // 6. PDF 파일명 생성
+    const nowText =
+      Utilities.formatDate(
+        new Date(),
+        'Asia/Seoul',
+        'yyyyMMdd_HHmmss'
+      );
+
+    const fileName =
+      '프로그램운영현황_' +
+      nowText +
+      '.pdf';
+
+    console.log(
+      'PDF 파일명: ' +
+      fileName
+    );
+
+    // 7. PDF 대상 시트 ID
+    const sheetId =
+      reportSheet.getSheetId();
+
+    console.log(
+      'PDF 대상 시트 ID: ' +
+      sheetId
+    );
+
+    SpreadsheetApp.flush();
+
+    console.log(
+      '시트 변경 내용을 모두 반영했습니다.'
+    );
+
+    // 8. PDF 출력 주소 생성
+    const exportUrl =
+      'https://docs.google.com/spreadsheets/d/' +
+      ss.getId() +
+      '/export' +
+      '?format=pdf' +
+      '&amp;gid=' + sheetId +
+      '&amp;size=A4' +
+      '&amp;portrait=true' +
+      '&amp;fitw=true' +
+      '&amp;sheetnames=false' +
+      '&amp;printtitle=false' +
+      '&amp;pagenumbers=false' +
+      '&amp;gridlines=false' +
+      '&amp;fzr=false';
+
+    console.log(
+      'PDF 변환용 주소를 만들었습니다.'
+    );
+
+    // 9. Google 인증 정보 준비
+    const token =
+      ScriptApp.getOAuthToken();
+
+    console.log(
+      'Google 인증 정보를 준비했습니다.'
+    );
+
+    // 10. PDF 요청
+    const response =
+      UrlFetchApp.fetch(
+        exportUrl,
+        {
+          headers: {
+            Authorization:
+              'Bearer ' + token
+          },
+          muteHttpExceptions:
+            true
+        }
+      );
+
+    const responseCode =
+      response.getResponseCode();
+
+    console.log(
+      'PDF 변환 응답 코드: ' +
+      responseCode
+    );
+
+    if (responseCode !== 200) {
+      throw new Error(
+        'PDF 변환에 실패했습니다. 응답 코드: ' +
+        responseCode
+      );
+    }
+
+    // 11. PDF 파일 데이터 준비
+    const pdfBlob =
+      response
+        .getBlob()
+        .setName(
+          fileName
+        );
+
+    console.log(
+      'PDF 파일 데이터를 만들었습니다.'
+    );
+
+    // 12. Drive에 PDF 저장
+    const pdfFile =
+      reportFolder
+        .createFile(
+          pdfBlob
+        );
+
+    console.log(
+      'PDF 파일을 Drive에 저장했습니다.'
+    );
+
+    console.log(
+      '생성된 PDF 주소: ' +
+      pdfFile.getUrl()
+    );
+
+    // 13. 최근 PDF 링크 기록
+    reportSheet
+      .getRange(
+        'D4'
+      )
+      .setValue(
+        '최근 PDF'
+      );
+
+    reportSheet
+      .getRange(
+        'D5'
+      )
+      .setValue(
+        pdfFile.getUrl()
+      );
+
+    console.log(
+      'D5 셀에 최근 PDF 주소를 기록했습니다.'
+    );
+
+    ss.toast(
+      '운영 현황 보고서를 PDF로 저장했습니다.',
+      'PDF 생성 완료',
+      5
+    );
+
+    console.log(
+      '===== 프로그램 운영 보고서 PDF 생성 정상 종료 ====='
+    );
+
+    return pdfFile.getUrl();
+
+  } catch (error) {
+
+    console.error(
+      'PDF 생성 오류: ' +
+      error.message
+    );
+
+    throw error;
+  }
+}</code></pre>
+<div class="action run">✅ Code.gs 저장 → 함수 선택 <code>createProgramSummaryPdf</code> → 실행 ▶</div>
+<p><b>새로고침:</b> 필요 없음.</p>
+<p><b>정상 결과:</b> 최신 보고서 생성 → Drive의 운영보고서 폴더에 PDF 저장 → 프로그램요약보고서 D4/D5에 최근 PDF 링크 기록.</p>
+<h2>STEP 12. 상담 일정 등록 + 담당자 이메일 자동 발송</h2>
+<p>프로그램운영관리에서 이용자 행을 선택하면 G열 상담일을 Google Calendar에 등록하고 L열 테스트 이메일로 안내 메일을 보냅니다.</p>
+<div class="action setting">⚙️ 실행 전 준비: 테스트할 행의 G열 상담일과 L열에 <b>본인 테스트 이메일</b>을 입력합니다.</div>
+<h3>12-1. Code.gs의 onOpen() 함수 수정</h3>
+<p><b>작업 파일:</b> Code.gs<br/>
+<b>기존 코드:</b> 다른 함수는 모두 유지<br/>
+<b>작업:</b> 기존 <code>onOpen()</code> 함수만 통째로 삭제하고 아래 전체 함수로 교체합니다.</p>
+<pre><code class="language-javascript">function onOpen() {
+
+  console.log('===== 사용자 정의 메뉴 생성 시작 =====');
+
+  const ui = SpreadsheetApp.getUi();
+
+  ui.createMenu('📋 복지 프로그램 관리')
+
+    .addItem(
+      '안내 메시지 보기',
+      'showWelcomeAlert'
+    )
+
+    .addItem(
+      '담당자 입력하기',
+      'showManagerPrompt'
+    )
+
+    .addItem(
+      '작업 완료 알림',
+      'showToastMessage'
+    )
+
+    .addSeparator()
+
+    .addItem(
+      '업무 안내창 열기',
+      'showModalGuide'
+    )
+
+    .addItem(
+      '업무 패널 열기',
+      'showSidebar'
+    )
+
+    .addSeparator()
+
+    .addItem(
+      '선택 이용자 폴더 만들기',
+      'createClientFolderForSelectedRow'
+    )
+
+    .addSeparator()
+
+    .addItem(
+      '상담 일정 등록 + 이메일 발송',
+      'registerConsultationAndNotify'
+    )
+
+    .addToUi();
+
+  console.log('복지 프로그램 관리 메뉴를 생성했습니다.');
+  console.log('===== 사용자 정의 메뉴 생성 완료 =====');
+}</code></pre>
+<h3>12-2. Code.gs에 상담 자동화 함수 추가</h3>
+<p><b>작업 파일:</b> Code.gs<br/>
+<b>기존 코드:</b> 모두 유지<br/>
+<b>작업:</b> Code.gs 맨 아래에 아래 <code>registerConsultationAndNotify()</code> 함수 전체를 추가합니다.</p>
+<pre><code class="language-javascript">function registerConsultationAndNotify() {
+
+  console.log('===== 상담 일정 등록 및 이메일 발송 시작 =====');
+
+  try {
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getActiveSheet();
+
+    console.log('현재 시트: ' + sheet.getName());
+
+    if (sheet.getName() !== '프로그램운영관리') {
+      throw new Error(
+        '프로그램운영관리 시트에서 실행해주세요.'
+      );
+    }
+
+    // STEP 12에서 사용할 L~N열이 부족한 경우 자동으로 추가합니다.
+    if (sheet.getMaxColumns() &lt; 14) {
+
+      const addCount =
+        14 - sheet.getMaxColumns();
+
+      sheet.insertColumnsAfter(
+        sheet.getMaxColumns(),
+        addCount
+      );
+
+      console.log(
+        'STEP 12에 필요한 L~N열을 추가했습니다.'
+      );
+    }
+
+    // STEP 12에서 사용할 열 제목을 준비합니다.
+    sheet.getRange('L1').setValue('담당자이메일');
+    sheet.getRange('M1').setValue('캘린더이벤트ID');
+    sheet.getRange('N1').setValue('메일발송일');
+
+    console.log('L~N열 제목을 확인했습니다.');
+
+    // 현재 사용자가 선택한 행을 확인합니다.
+    const activeRange = sheet.getActiveRange();
+
+    if (!activeRange) {
+      throw new Error(
+        '먼저 이용자 행의 셀을 선택해주세요.'
+      );
+    }
+
+    const selectedRow = activeRange.getRow();
+
+    console.log('선택한 행: ' + selectedRow);
+
+    if (selectedRow === 1) {
+      throw new Error(
+        '제목 행이 아닌 이용자 데이터 행을 선택해주세요.'
+      );
+    }
+
+    // 선택한 행의 A~N 값을 한 번에 읽습니다.
+    const rowData =
+      sheet
+        .getRange(
+          selectedRow,
+          1,
+          1,
+          14
+        )
+        .getValues()[0];
+
+    const receiptNumber = rowData[0];
+    const clientName = rowData[1];
+    const programName = rowData[2];
+    const manager = rowData[4];
+    const consultationDate = rowData[6];
+    const memo = rowData[8];
+    const managerEmail = rowData[11];
+    const existingEventId = rowData[12];
+    const existingMailDate = rowData[13];
+
+    console.log('접수번호: ' + receiptNumber);
+    console.log('이용자명: ' + clientName);
+    console.log('프로그램명: ' + programName);
+    console.log('담당자: ' + manager);
+    console.log('상담일: ' + consultationDate);
+    console.log('담당자 이메일: ' + managerEmail);
+    console.log('기존 캘린더 이벤트 ID: ' + existingEventId);
+    console.log('기존 메일 발송일: ' + existingMailDate);
+
+    // 필수 데이터 확인
+    if (!receiptNumber) {
+      throw new Error('접수번호가 없습니다.');
+    }
+
+    if (!clientName) {
+      throw new Error('이용자명이 없습니다.');
+    }
+
+    if (!programName) {
+      throw new Error('프로그램명이 없습니다.');
+    }
+
+    if (!manager) {
+      throw new Error('담당자가 없습니다.');
+    }
+
+    if (!consultationDate) {
+      throw new Error(
+        '상담일이 없습니다. G열 상담일을 먼저 입력해주세요.'
+      );
+    }
+
+    if (!(consultationDate instanceof Date)) {
+      throw new Error(
+        '상담일이 날짜 형식이 아닙니다. G열의 날짜를 다시 확인해주세요.'
+      );
+    }
+
+    if (!managerEmail) {
+      throw new Error(
+        '담당자 이메일이 없습니다. L열에 테스트할 이메일 주소를 입력해주세요.'
+      );
+    }
+
+    // 1) Google Calendar 일정 등록
+    if (!existingEventId) {
+
+      console.log(
+        '등록된 일정이 없으므로 새 상담 일정을 만듭니다.'
+      );
+
+      const calendar =
+        CalendarApp.getDefaultCalendar();
+
+      const eventTitle =
+        '[' +
+        programName +
+        '] ' +
+        clientName +
+        ' 상담';
+
+      const description =
+        '접수번호: ' + receiptNumber + '\n' +
+        '이용자명: ' + clientName + '\n' +
+        '프로그램: ' + programName + '\n' +
+        '담당자: ' + manager + '\n' +
+        '비고: ' + (memo || '없음');
+
+      console.log('일정 제목: ' + eventTitle);
+
+      // 상담일에 시간 정보가 없으므로 종일 일정으로 등록합니다.
+      const event =
+        calendar.createAllDayEvent(
+          eventTitle,
+          consultationDate,
+          {
+            description: description
+          }
+        );
+
+      const eventId = event.getId();
+
+      console.log('Calendar 일정 생성 완료');
+      console.log('생성된 이벤트 ID: ' + eventId);
+
+      // 중복 일정을 막기 위해 M열에 이벤트 ID를 저장합니다.
+      sheet
+        .getRange(selectedRow, 13)
+        .setValue(eventId);
+
+      console.log(
+        'M열에 캘린더 이벤트 ID를 저장했습니다.'
+      );
+
+    } else {
+
+      console.log(
+        '이미 캘린더 이벤트 ID가 있으므로 일정 생성을 건너뜁니다.'
+      );
+    }
+
+    // 2) 담당자 이메일 발송
+    if (!existingMailDate) {
+
+      console.log(
+        '기존 메일 발송 기록이 없으므로 이메일을 발송합니다.'
+      );
+
+      const dateText =
+        Utilities.formatDate(
+          consultationDate,
+          'Asia/Seoul',
+          'yyyy-MM-dd'
+        );
+
+      const subject =
+        '[상담 일정 안내] ' +
+        clientName +
+        ' - ' +
+        programName;
+
+      const body =
+        manager +
+        ' 담당자님\n\n' +
+        '상담 일정이 등록되었습니다.\n\n' +
+        '접수번호: ' + receiptNumber + '\n' +
+        '이용자명: ' + clientName + '\n' +
+        '프로그램: ' + programName + '\n' +
+        '상담일: ' + dateText + '\n' +
+        '비고: ' + (memo || '없음') +
+        '\n\nGoogle Calendar에도 상담 일정이 등록되었습니다.';
+
+      console.log('이메일 제목: ' + subject);
+
+      GmailApp.sendEmail(
+        managerEmail,
+        subject,
+        body
+      );
+
+      console.log('담당자 이메일 발송 완료');
+
+      const mailSentDate = new Date();
+
+      // 중복 발송을 막기 위해 N열에 발송 시간을 기록합니다.
+      sheet
+        .getRange(selectedRow, 14)
+        .setValue(mailSentDate)
+        .setNumberFormat('yyyy-MM-dd HH:mm');
+
+      console.log(
+        'N열에 메일 발송 시간을 기록했습니다.'
+      );
+
+    } else {
+
+      console.log(
+        '이미 메일 발송 기록이 있으므로 이메일 발송을 건너뜁니다.'
+      );
+    }
+
+    SpreadsheetApp.flush();
+
+    ss.toast(
+      '상담 일정과 이메일 처리를 완료했습니다.',
+      '상담 업무 자동화',
+      5
+    );
+
+    console.log(
+      '===== 상담 일정 등록 및 이메일 발송 정상 종료 ====='
+    );
+
+  } catch (error) {
+
+    console.error(
+      '상담 일정/이메일 처리 오류: ' +
+      error.message
+    );
+
+    SpreadsheetApp
+      .getUi()
+      .alert(
+        '상담 업무 처리 오류\n\n' +
+        error.message
+      );
+
+    throw error;
+  }
+}</code></pre>
+<div class="action refresh">🔄 onOpen()을 수정했으므로 Code.gs 저장 → 구글시트로 돌아가기 → 브라우저 새로고침이 필요합니다.</div>
+<div class="action no-run">🚫 <code>registerConsultationAndNotify()</code>는 Apps Script 실행 ▶ 버튼으로 테스트하지 않습니다.</div>
+<h3>12-3. 시트에서 실행</h3>
+<ol>
+<li>프로그램운영관리 시트에서 테스트할 이용자 행의 셀 하나를 선택합니다.</li>
+<li>상단 <b>📋 복지 프로그램 관리</b> 메뉴를 엽니다.</li>
+<li><b>상담 일정 등록 + 이메일 발송</b>을 클릭합니다.</li>
+</ol>
+<p><b>정상 결과:</b> Calendar 일정 생성 → M열 이벤트 ID 저장 → 이메일 발송 → N열 메일 발송일 기록.</p>
+<p><b>같은 행 재실행:</b> 기존 M/N열 기록을 확인하여 일정과 이메일을 중복 생성하지 않습니다.</p>
+<h2>STEP 13 FINAL. 지금까지 만든 자동화를 실제 웹앱으로 완성하기</h2>
+<p>이번 단계는 Sidebar를 꾸미는 실습이 아닙니다. 지금까지 만든 기능을 <b>독립적인 Google Apps Script 웹앱</b>으로 발전시킵니다.</p>
+<div class="action setting">⚙️ 핵심 구조: Google Sheet = 데이터 저장 / Code.gs = 업무 처리 / Index.html = 웹 화면 / 웹앱 URL = 접속 주소</div>
+<div class="action setting">🔐 실습은 가상 이용자 데이터와 본인 테스트 이메일만 사용합니다.</div>
+<h3>13-1. AI에게 현재 프로젝트 분석시키기</h3>
+<p>바로 수정시키지 않고 현재 함수 중 무엇을 그대로 쓸 수 있고, 무엇이 웹앱에 맞지 않는지 먼저 분석시킵니다.</p>
+<pre><code>나는 Google Apps Script로 사회복지 프로그램 운영관리 시스템을 만들고 있습니다.
+
+현재 프로그램운영관리 시트 열은 다음과 같습니다.
+A 접수번호
+B 이용자명
+C 프로그램명
+D 신청일
+E 담당자
+F 상태
+G 상담일
+H 완료일
+I 비고
+J 파일링크
+K 후속확인
+L 담당자이메일
+M 캘린더이벤트ID
+N 메일발송일
+
+현재 정상 작동하는 기능:
+1. 신규 접수 저장
+2. 상태별 운영 현황 집계
+3. 이용자 Drive 폴더 생성
+4. 운영 현황 보고서 생성
+5. PDF 저장
+6. Calendar 상담 일정 등록
+7. 담당자 이메일 발송
+
+현재 Code.gs와 Sidebar.html 전체 코드를 아래에 제공합니다.
+
+[Code.gs 전체 코드]
+
+[Sidebar.html 전체 코드]
+
+아직 코드를 수정하지 마세요.
+
+먼저 다음을 분석해주세요.
+1. 각 함수 이름과 역할
+2. 서로 연결되는 함수
+3. 웹앱에서도 그대로 재사용 가능한 함수
+4. 현재 시트 선택 또는 ActiveSpreadsheet에 의존해서 웹앱용으로 바꿔야 하는 함수
+5. Script Properties에서 사용하는 설정값
+
+분석 결과만 작성해주세요.</code></pre>
+<h3>13-2. Code.gs + Index.html로 웹앱 기본 화면 만들기</h3>
+<p><b>작업 위치:</b> Code.gs + 새 파일 Index.html<br/>
+<b>기존 코드:</b> 유지<br/>
+<b>중요:</b> 웹앱에서는 시트의 현재 선택 행을 사용할 수 없고, ActiveSpreadsheet가 없을 수 있으므로 SPREADSHEET_ID를 사용하도록 설계합니다.</p>
+<pre><code>현재 코드 분석은 완료했습니다.
+
+이제 이 프로젝트를 실제 Google Apps Script 웹앱으로 만들고 싶습니다.
+
+조건:
+1. 기존 정상 기능은 삭제하지 않습니다.
+2. Code.gs에 doGet()을 추가합니다.
+3. 새 HTML 파일 이름은 Index.html로 합니다.
+4. Index.html에는 우선 제목과 기본 카드 영역만 만듭니다.
+5. 아직 Drive, Calendar, Gmail, PDF 기능은 연결하지 않습니다.
+6. 웹앱에서 사용할 서버 함수는 현재 선택 행에 의존하지 않도록 설계할 예정입니다.
+7. 웹앱에서 스프레드시트를 사용할 때는 Script Properties의 SPREADSHEET_ID를 사용해 SpreadsheetApp.openById()로 명확하게 엽니다.
+8. 주요 단계에 console.log()를 넣습니다.
+
+이번 단계에서 수정이 필요한 파일만 전체 코드로 작성해주세요.
+
+그리고
+- 어느 파일을 새로 만드는지
+- 기존 코드를 유지하는지
+- 실행 방법
+- 정상 결과
+도 함께 알려주세요.</code></pre>
+<div class="action setting">⚙️ 배포: Apps Script → 배포 → 새 배포 → 웹 앱 → 교육 환경에 맞는 실행 사용자/접근 권한 선택 → 배포</div>
+<p><b>정상 결과:</b> 발급된 웹앱 URL을 열었을 때 Index.html 기본 화면이 보입니다.</p>
+<h3>13-3. 신규 접수 저장 연결</h3>
+<pre><code>현재 웹앱 기본 화면이 정상적으로 열립니다.
+
+이번에는 신규 접수 저장 기능만 연결해주세요.
+
+중요 조건:
+1. 기존 정상 기능은 삭제하지 않습니다.
+2. 웹앱에서는 SpreadsheetApp.getActiveSpreadsheet()에 의존하지 않습니다.
+3. Script Properties의 SPREADSHEET_ID를 사용해 대상 스프레드시트를 엽니다.
+4. 프로그램운영관리 시트에 저장합니다.
+5. 접수번호는 기존 규칙을 유지합니다.
+6. 이용자명, 프로그램명, 담당자, 상태, 상담일, 담당자이메일, 비고를 입력할 수 있게 합니다.
+7. Index.html의 저장 버튼은 google.script.run으로 서버 함수를 호출합니다.
+8. 성공/오류 메시지를 웹앱 화면에 표시합니다.
+9. 주요 단계마다 console.log()를 넣습니다.
+10. 부분 코드가 아니라 수정이 필요한 파일의 전체 코드를 작성해주세요.
+
+현재 정상 작동하는 기능은 절대 삭제하지 마세요.</code></pre>
+<p><b>확인:</b> 웹앱 입력 → 저장 → 프로그램운영관리 시트에 새 행 생성.</p>
+<h3>13-4. 운영 현황 카드 연결</h3>
+<pre><code>신규 접수 저장 기능은 정상 작동합니다.
+
+이번에는 운영 현황 기능만 추가해주세요.
+
+기존 checkProgramStatus()의 집계 규칙을 유지하되,
+웹앱에서도 안전하게 동작하도록 SPREADSHEET_ID로 대상 스프레드시트를 명확하게 열어주세요.
+
+웹앱에 다음 카드가 표시되어야 합니다.
+전체
+대기
+진행중
+완료
+보류
+
+[현황 새로고침] 버튼을 누르면 최신 값을 다시 불러오게 해주세요.
+
+기존 정상 기능은 삭제하지 마세요.
+수정이 필요한 파일만 전체 코드로 작성해주세요.</code></pre>
+<h3>13-5. 웹앱용 이용자 선택 목록 만들기</h3>
+<p>웹앱에서는 “시트에서 행 선택” 대신 접수번호를 기준으로 이용자를 선택합니다.</p>
+<pre><code>현재 신규 접수와 운영 현황 기능은 정상 작동합니다.
+
+이제 웹앱에서 이용자를 선택할 수 있게 해주세요.
+
+프로그램운영관리 시트에서
+접수번호, 이용자명, 프로그램명을 읽어
+드롭다운으로 보여주세요.
+
+표시 예:
+P001 - 이용자001 - 스마트폰 활용교육
+
+실제 값은 접수번호를 사용해주세요.
+
+조건:
+1. SPREADSHEET_ID로 스프레드시트를 엽니다.
+2. 빈 접수번호 행은 제외합니다.
+3. 웹앱이 열릴 때 목록을 자동으로 불러옵니다.
+4. [이용자 목록 새로고침]도 가능하게 합니다.
+5. 기존 기능은 삭제하지 않습니다.
+6. 수정이 필요한 파일만 전체 코드로 작성해주세요.</code></pre>
+<h3>13-6. Drive 기능 연결</h3>
+<pre><code>현재 이용자 선택 목록까지 정상 작동합니다.
+
+기존 createClientFolderForSelectedRow()는 구글시트의 현재 선택 행을 사용하므로
+웹앱에서는 그대로 사용할 수 없습니다.
+
+웹앱용 함수를 새로 만들어주세요.
+
+조건:
+1. 웹앱에서 선택한 접수번호를 인자로 받습니다.
+2. 프로그램운영관리 시트에서 접수번호가 같은 행을 찾습니다.
+3. Script Properties의 FOLDER_ID를 사용합니다.
+4. J열에 이미 폴더 링크가 있으면 중복 생성하지 않습니다.
+5. 없으면 이용자 폴더를 만들고 J열에 링크를 기록합니다.
+6. 성공/오류 결과를 웹앱 메시지 영역에 표시합니다.
+7. 기존 createClientFolderForSelectedRow()는 삭제하지 않습니다.
+8. 주요 단계에 console.log()를 넣습니다.
+9. 수정이 필요한 파일만 전체 코드로 작성해주세요.</code></pre>
+<h3>13-7. Calendar 기능 연결</h3>
+<pre><code>Drive 폴더 생성 기능은 정상 작동합니다.
+
+이번에는 웹앱에서 선택한 접수번호를 기준으로 상담 일정을 Google Calendar에 등록해주세요.
+
+조건:
+1. 프로그램운영관리 시트에서 접수번호로 행을 찾습니다.
+2. G열 상담일을 사용합니다.
+3. M열 캘린더이벤트ID가 비어 있을 때만 새 종일 일정을 만듭니다.
+4. 일정 제목은 [프로그램명] 이용자명 상담 형식으로 합니다.
+5. 일정 설명에는 접수번호, 담당자, 비고를 넣습니다.
+6. 생성 후 M열에 이벤트 ID를 기록합니다.
+7. M열에 값이 있으면 중복 생성하지 않습니다.
+8. 성공/오류 메시지를 웹앱에 표시합니다.
+9. 기존 기능은 삭제하지 않습니다.
+10. 수정이 필요한 파일만 전체 코드로 작성해주세요.</code></pre>
+<h3>13-8. Gmail 기능 연결</h3>
+<pre><code>Calendar 일정 등록 기능은 정상 작동합니다.
+
+이번에는 웹앱에서 선택한 이용자의 담당자 이메일로 안내 메일을 발송해주세요.
+
+조건:
+1. 접수번호로 프로그램운영관리 행을 찾습니다.
+2. L열 담당자이메일을 사용합니다.
+3. N열 메일발송일이 비어 있을 때만 발송합니다.
+4. 발송 후 N열에 발송 시간을 기록합니다.
+5. N열에 값이 있으면 중복 발송하지 않습니다.
+6. 수업 테스트는 본인의 테스트 이메일만 사용합니다.
+7. 성공/오류 메시지를 웹앱에 표시합니다.
+8. 기존 기능은 삭제하지 않습니다.
+9. 수정이 필요한 파일만 전체 코드로 작성해주세요.</code></pre>
+<h3>13-9. 보고서 + PDF 연결</h3>
+<pre><code>현재 신규 접수, 운영 현황, Drive, Calendar, Gmail 기능이 정상 작동합니다.
+
+이번에는 보고서 기능을 웹앱에 연결해주세요.
+
+기존 함수:
+createProgramSummaryReport()
+createProgramSummaryPdf()
+
+중요:
+웹앱에서는 ActiveSpreadsheet가 없을 수 있으므로
+보고서 관련 함수가 SpreadsheetApp.getActiveSpreadsheet()에 의존한다면
+Script Properties의 SPREADSHEET_ID를 사용하도록 웹앱에서도 안전한 구조로 수정해주세요.
+
+조건:
+1. [운영 현황 보고서 생성] 버튼
+2. [PDF 저장] 버튼
+3. 기존 FOLDER_ID 사용
+4. 기존 A1:D2 병합 안전 처리 유지
+5. PDF 생성 전 최신 보고서를 먼저 갱신
+6. 성공/오류 결과를 웹앱에 표시
+7. 기존 정상 기능 삭제 금지
+8. 수정이 필요한 파일만 전체 코드로 작성해주세요.</code></pre>
+<h3>13-10. 기능이 모두 된 뒤 디자인 정리</h3>
+<pre><code>현재 웹앱의 모든 기능이 정상 작동합니다.
+
+이제 기능은 건드리지 말고 Index.html 디자인만 정리해주세요.
+
+구조:
+1. 신규 접수
+2. 운영 현황
+3. 이용자 업무
+4. 보고서
+5. 처리 결과
+
+조건:
+- 카드형 레이아웃
+- 좁은 화면에서도 보기 편하게
+- 버튼과 입력창 간격 정리
+- 처리 중에는 버튼 중복 클릭 방지
+- 처리 완료/오류 메시지를 눈에 띄게 표시
+- 기존 google.script.run 호출과 함수 이름은 변경하지 않기
+
+Index.html 전체 코드를 작성해주세요.</code></pre>
+<h3>13-11. 최종 점검</h3>
+<pre><code>현재 웹앱의 모든 기능이 정상 작동합니다.
+
+현재 전체 Code.gs와 Index.html을 제공합니다.
+
+[Code.gs 전체 코드]
+
+[Index.html 전체 코드]
+
+최종 점검해주세요.
+
+반드시 확인:
+1. SPREADSHEET_ID 사용
+2. FOLDER_ID 사용
+3. 신규 접수
+4. 운영 현황
+5. 이용자 목록
+6. Drive 폴더
+7. Calendar 일정
+8. Gmail 발송
+9. 보고서
+10. PDF
+11. 중복 실행 방지
+12. 주요 console.log
+13. console.error
+14. 사용자 오류 메시지
+15. 개인정보 실습은 가상 데이터와 본인 테스트 이메일만 사용
+
+정상 작동하는 기능은 삭제하지 마세요.
+
+문제가 있는 경우
+원인을 먼저 설명한 뒤
+수정이 필요한 파일만 전체 코드로 작성해주세요.
+
+마지막에 기능별 테스트 순서를 적어주세요.</code></pre>
+<div class="action refresh">🔄 웹앱 코드를 수정했는데 /exec 화면이 그대로라면: 배포 관리 → 기존 웹앱 편집 → 새 버전으로 업데이트 배포합니다.</div>
+<h3>STEP 13 완료 체크</h3>
+<ul>
+<li>웹앱 URL 접속</li>
+<li>신규 접수 저장</li>
+<li>운영 현황 카드</li>
+<li>이용자 드롭다운</li>
+<li>Drive 폴더 생성</li>
+<li>Calendar 일정 등록</li>
+<li>Gmail 발송</li>
+<li>보고서 생성</li>
+<li>PDF 저장</li>
+<li>중복 실행 방지</li>
+</ul>
+<h2>STEP 14. 기존 코드를 바꿔 나만의 사회복지 업무도구 만들기</h2>
+<p>STEP 13은 모두가 같은 프로그램 운영관리 웹앱을 완성했습니다. STEP 14는 각자 다른 결과물을 만듭니다.</p>
+<h3>14-1. 기존 코드 하나 선택</h3>
+<table>
+<tr><th>기존 코드 종류</th><th>사회복지 업무 예</th></tr>
+<tr><td>Google Docs</td><td>프로그램 참여확인서, 상담확인서, 수료확인서</td></tr>
+<tr><td>Google Sheets</td><td>사례관리 대장, 자원봉사 관리표, 후원물품 관리표</td></tr>
+<tr><td>Google Forms</td><td>프로그램 신청서, 만족도 조사, 욕구조사</td></tr>
+<tr><td>Calendar</td><td>상담, 가정방문, 프로그램, 사례회의 일정</td></tr>
+<tr><td>Gmail</td><td>참여 안내, 상담 안내, 제출서류 안내</td></tr>
+<tr><td>조건 분류/서식</td><td>후속확인, 미제출, 마감 임박, 완료/보류 구분</td></tr>
+</table>
+<h3>14-2. 코드부터 바꾸지 말고 먼저 분석</h3>
+<pre><code>아래 Google Apps Script 코드를 분석해주세요.
+
+이 코드는 현재 무엇을 자동화하는 코드인지
+초보자도 이해할 수 있게 설명해주세요.
+
+1. 어떤 Google 서비스를 사용하는지
+2. 어떤 데이터를 사용하는지
+3. 어떤 결과물을 만드는지
+4. 사회복지 업무에서는 어떤 용도로 바꿔 쓸 수 있는지
+5. 수정할 때 바꿔야 할 부분
+6. 그대로 유지하면 좋은 부분
+
+아직 코드는 수정하지 마세요.
+
+[기존 코드 전체 붙여넣기]</code></pre>
+<h3>14-3. 사회복지 업무에 맞게 첫 번째 수정</h3>
+<pre><code>현재 코드 분석을 바탕으로 이 코드를 사회복지 업무용으로 바꾸고 싶습니다.
+
+현재 만들고 싶은 업무도구:
+[예: 프로그램 참여확인서 / 만족도 조사 / 상담 일정 관리 / 자원봉사 관리표]
+
+현재 정상 작동하는 구조:
+[AI가 앞 단계에서 분석한 내용]
+
+변경하고 싶은 내용:
+1. [변경 1]
+2. [변경 2]
+3. [변경 3]
+
+반드시 유지할 내용:
+1. 현재 정상 작동하는 기능은 삭제하지 않기
+2. 주요 단계에 console.log() 넣기
+3. 오류에는 console.error() 사용하기
+4. 개인정보는 실제 이용자 정보가 아닌 가상 데이터로 테스트하기
+
+수정된 전체 코드를 작성해주세요.
+
+그리고
+- 어느 부분을 바꿨는지
+- 어떻게 실행하는지
+- 정상 결과가 무엇인지
+도 함께 알려주세요.</code></pre>
+<h3>14-4. 내가 만들고 싶은 업무도구 설계</h3>
+<table>
+<tr><th>질문</th><th>내가 작성</th></tr>
+<tr><td>반복하는 업무는?</td><td></td></tr>
+<tr><td>지금은 어떻게 처리하나?</td><td></td></tr>
+<tr><td>어떤 데이터를 사용하나?</td><td></td></tr>
+<tr><td>자동화하고 싶은 부분은?</td><td></td></tr>
+<tr><td>최종 결과물은?</td><td></td></tr>
+<tr><td>사용할 Google 서비스는?</td><td></td></tr>
+</table>
+<h3>14-5. 내 아이디어를 AI와 구조화</h3>
+<pre><code>나는 사회복지 업무에서 아래 업무를 자동화하고 싶습니다.
+
+반복하는 업무:
+[작성]
+
+현재 처리 방법:
+[작성]
+
+사용하는 데이터:
+[작성]
+
+자동화하고 싶은 부분:
+[작성]
+
+최종 결과물:
+[작성]
+
+사용하고 싶은 Google 서비스:
+[Google Sheets / Docs / Forms / Drive / Calendar / Gmail 중 선택]
+
+나는 Apps Script 초보자입니다.
+
+아직 코드를 작성하지 말고 먼저 다음을 정리해주세요.
+
+1. 필요한 데이터
+2. 필요한 Google 서비스
+3. 필요한 함수
+4. 실행 흐름
+5. 예상 결과물
+6. 개인정보를 넣지 않고 테스트하는 방법</code></pre>
+<h3>14-6. 최소 기능부터 단계별 제작</h3>
+<pre><code>좋습니다.
+
+이제 가장 기본 기능부터 하나씩 만들고 싶습니다.
+
+처음부터 모든 기능을 한 번에 만들지 마세요.
+
+1단계에서 실행 가능한 최소 기능만 만들어주세요.
+
+각 단계마다 반드시 다음 형식으로 알려주세요.
+
+[작업 위치]
+Code.gs / HTML 파일 / 새 프로젝트 등
+
+[기존 코드]
+유지 / 함수만 전체 교체 / 파일 전체 교체
+
+[붙여넣기]
+어디에 붙여넣는지
+
+[완성 코드]
+부분 코드가 아니라 해당 단계에서 필요한 전체 코드
+
+[실행]
+실행 ▶을 누르는지
+시트에서 실행하는지
+메뉴에서 실행하는지
+
+[새로고침]
+필요 / 불필요
+
+[별도 설정]
+Script Properties / 권한 / 트리거 / 폴더 등
+
+[정상 결과]
+무엇이 보여야 하는지
+
+[오류 체크]
+어디를 확인해야 하는지
+
+주요 단계마다 console.log()를 넣어주세요.
+현재 정상 작동하는 기능은 삭제하지 마세요.</code></pre>
+<div class="action setting">⭐ STEP 14의 목표는 “정답 코드 만들기”가 아니라 “내 업무를 구조화하고 AI에게 정확하게 수정 요청하는 방법 익히기”입니다.</div>
+<h2>STEP 1~14 최종 완료 체크</h2>
+<ul>
+<li>Google Sheet 업무 자동화</li>
+<li>사용자 정의 메뉴와 Sidebar</li>
+<li>트리거와 로그</li>
+<li>운영 현황 집계와 배치 처리</li>
+<li>Script Properties</li>
+<li>Drive 자동화</li>
+<li>보고서와 PDF</li>
+<li>Calendar + Gmail</li>
+<li>실제 웹앱 배포</li>
+<li>AI 프롬프트로 기능 추가/수정</li>
+<li>나만의 사회복지 업무자동화 아이디어</li>
+</ul>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('pre').forEach(function(pre) {
+    if (pre.parentElement && pre.parentElement.classList.contains('codebox-wrap')) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'codebox-wrap';
+
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'codecopy-btn';
+
+    var text = pre.innerText || '';
+    var looksLikePrompt =
+      text.indexOf('현재') !== -1 &&
+      (text.indexOf('작성해주세요') !== -1 ||
+       text.indexOf('AI') !== -1 ||
+       text.indexOf('프롬프트') !== -1);
+
+    btn.textContent = looksLikePrompt ? '📋 프롬프트 복사' : '📋 코드 복사';
+
+    btn.addEventListener('click', async function() {
+      var copyText = pre.innerText || '';
+      var oldText = btn.textContent;
+      try {
+        await navigator.clipboard.writeText(copyText);
+      } catch (e) {
+        var ta = document.createElement('textarea');
+        ta.value = copyText;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+      }
+      btn.textContent = '✅ 복사됨!';
+      setTimeout(function() {
+        btn.textContent = oldText;
+      }, 1200);
+    });
+
+    wrap.appendChild(btn);
+  });
+});
+</script>
+</body>
+</html>
