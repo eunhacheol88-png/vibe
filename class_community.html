@@ -286,22 +286,23 @@
         } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
         // =========================================================================
-        // [설정 1] Firebase 프로젝트 설정 (vibe-class-7)
+        // [설정 1] Firebase 프로젝트 설정 (class-community-2026)
         // =========================================================================
         const firebaseConfig = {
-  apiKey: "AIzaSyCK0-lU-j5sKeokcDHcnPPTfjUBp_WZNWk",
-  authDomain: "vibe-class-7.firebaseapp.com",
-  projectId: "vibe-class-7",
-  storageBucket: "vibe-class-7.firebasestorage.app",
-  messagingSenderId: "393246986721",
-  appId: "1:393246986721:web:a1fd0c3aaa656813c742a0"
-};
+            apiKey: "AIzaSyDPTvmzqGYMMiY8N8otY6meFhdPJzHcPSw",
+            authDomain: "class-community-2026.firebaseapp.com",
+            projectId: "class-community-2026",
+            storageBucket: "class-community-2026.firebasestorage.app",
+            messagingSenderId: "276849400088",
+            appId: "1:276849400088:web:8b9f899a7b8faa0d68266d",
+            measurementId: "G-4J4XKGKSTP"
+        };
 
         // =========================================================================
         // [설정 2] Supabase Edge Function URL 설정
         // ⚠️ 아래 URL의 '본인프로젝트' 부분을 실제 Supabase 프로젝트 ID로 수정해 주세요.
         // =========================================================================
-        const SUPABASE_EDGE_FUNCTION_URL = "https://cyxhyigjjrbraehgzwhb.supabase.co/functions/v1/class-pdf-download";
+        const SUPABASE_EDGE_FUNCTION_URL = "https://lwrtfhzhhnltaubfmkdm.supabase.co/functions/v1/class-pdf-download";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
