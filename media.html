@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI 숏폼 실습실</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 상단 고정 탭바 + 한 열 본문(최대 980px). 9:16 썸네일과 복사 가능한 프롬프트 카드가 반복 단위 */
+:root{
+  --bg:#FBFAF7; --surface:#FFFFFF; --tint:#F3F0FA; --line:#E4E0EC;
+  --ink:#1E1B2E; --muted:#5E5A72;
+  --tomato:#D9432F; --cheese:#E9A21A; --lettuce:#2F8F5B; --violet:#5B4BD6;
+  --code-bg:#1E1B2E; --code-fg:#F6F4FF; --code-label:#F5C451;
+  --display:"Black Han Sans","Noto Sans KR",system-ui,sans-serif;
+  --body:"Noto Sans KR",system-ui,-apple-system,"Malgun Gothic",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141220; --surface:#1D1A2C; --tint:#26223A; --line:#363150;
+  --ink:#F1EEFA; --muted:#B4AFC8;
+  --tomato:#FF7A66; --cheese:#F5C451; --lettuce:#5CC98B; --violet:#9D91FF;
+  --code-bg:#0D0B16; --code-fg:#F1EEFA; --code-label:#F5C451; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141220; --surface:#1D1A2C; --tint:#26223A; --line:#363150;
+  --ink:#F1EEFA; --muted:#B4AFC8;
+  --tomato:#FF7A66; --cheese:#F5C451; --lettuce:#5CC98B; --violet:#9D91FF;
+  --code-bg:#0D0B16; --code-fg:#F1EEFA; --code-label:#F5C451; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{font-family:var(--display);font-size:20px;letter-spacing:.01em;white-space:nowrap}
+.brand span{color:var(--tomato)}
+.spacer{flex:1}
+.toggle{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+.toggle input{accent-color:var(--violet);width:16px;height:16px}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:none;text-decoration:none;color:var(--muted);font-weight:500;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid transparent}
+nav.tabs a:hover{color:var(--ink);background:var(--tint)}
+nav.tabs a[aria-current="page"]{background:var(--ink);color:var(--bg)}
+nav.tabs a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--violet);outline-offset:2px}
+main{padding-block:28px 64px}
+section.view{display:grid;gap:28px}
+h1,h2{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;line-height:1.25}
+h1{font-size:clamp(30px,5vw,44px)}
+h2{font-size:24px}
+h3{font-size:17px;margin:0 0 6px}
+p{margin:0}
+.lead{color:var(--muted);max-width:62ch}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--violet)}
+.block{display:grid;gap:14px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.grid > *{min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:grid;gap:8px;align-content:start}
+.card.tint{background:var(--tint);border-color:transparent}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--tint);color:var(--violet)}
+.pill.t{color:var(--tomato)} .pill.c{color:var(--cheese)} .pill.l{color:var(--lettuce)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--muted);font-weight:700;background:var(--tint)}
+tr:last-child td{border-bottom:0}
+td.time{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:500}
+tr.now td{background:color-mix(in srgb,var(--cheese) 18%,transparent)}
+/* prompt box */
+.prompt{background:var(--code-bg);color:var(--code-fg);border-radius:12px;padding:14px 16px;display:grid;gap:8px;min-width:0}
+.prompt .ph{display:flex;align-items:center;gap:8px}
+.prompt .lab{font-size:12px;font-weight:700;color:var(--code-label);letter-spacing:.04em;flex:1}
+.prompt pre{margin:0;white-space:pre-wrap;word-break:keep-all;overflow-wrap:anywhere;font-family:var(--body);font-size:15px;line-height:1.7}
+button.copy{font:inherit;font-size:13px;font-weight:700;border:0;border-radius:8px;padding:6px 12px;cursor:pointer;background:var(--code-label);color:#1E1B2E}
+button.copy.done{background:#5CC98B}
+/* steps */
+ol.steps{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+ol.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--tomato);color:#fff;font-weight:700;font-size:14px;display:grid;place-items:center}
+ul.dots{margin:0;padding-left:20px;display:grid;gap:4px}
+/* scenes */
+.scene{display:grid;grid-template-columns:1fr;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.scene > div{min-width:0;display:grid;gap:10px;align-content:start}
+.thumb{width:150px;max-width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:10px;background:var(--tint);cursor:zoom-in;display:block}
+.sq{aspect-ratio:1/1;width:100%}
+.scene .say{font-size:17px;font-weight:700}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+@media (max-width:560px){.scene{grid-template-columns:1fr}.thumb{width:140px}}
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:inherit;font-size:14px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+/* forms */
+.form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.form label{display:grid;gap:4px;font-size:13px;font-weight:700;color:var(--muted)}
+.form input,.form select,.form textarea{font:inherit;font-size:15px;font-weight:400;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+/* checklist */
+.check{display:grid;gap:6px}
+.check label{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.check input{accent-color:var(--lettuce);width:18px;height:18px;margin-top:3px;flex:none}
+.check label:has(input:checked){border-color:var(--lettuce)}
+.check label:has(input:checked) span{color:var(--muted);text-decoration:line-through}
+.check b{font-weight:700}
+.progress{font-size:13px;font-weight:700;color:var(--lettuce)}
+/* callouts */
+.big{font-family:var(--display);font-size:clamp(22px,3.6vw,30px);line-height:1.35;background:var(--ink);color:var(--bg);border-radius:16px;padding:22px 24px}
+.note{border-left:0;background:color-mix(in srgb,var(--cheese) 16%,var(--surface));border-radius:12px;padding:12px 16px;font-size:15px}
+.teacher{display:none;background:color-mix(in srgb,var(--violet) 12%,var(--surface));border:1px dashed var(--violet);border-radius:12px;padding:12px 16px;font-size:14px}
+body.teach .teacher{display:block}
+.teacher::before{content:"강사 메모";display:block;font-size:12px;font-weight:700;color:var(--violet);margin-bottom:4px}
+/* examples */
+.ex{display:grid;grid-template-columns:1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px}
+.ex > div{min-width:0;display:grid;gap:8px;align-content:start}
+.ex .thumb{width:120px}
+@media (max-width:560px){.ex{grid-template-columns:1fr}}
+details.more summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--violet)}
+details.more[open] summary{margin-bottom:8px}
+/* timer */
+.timer{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.clock{font-family:var(--display);font-size:48px;font-variant-numeric:tabular-nums;min-width:4.2ch}
+.btn{font:inherit;font-size:14px;font-weight:700;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--tomato);border-color:var(--tomato);color:#fff}
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:20;background:rgba(10,8,18,.86);display:grid;place-items:center;padding:24px}
+.lb img{max-height:88vh;max-width:100%;border-radius:12px}
+.lb p{color:#fff;text-align:center;margin-top:10px;font-size:14px}
+.kit{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.kit figure{margin:0;display:grid;gap:6px}
+.kit figcaption{font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <div class="bar">
+      <div class="brand">AI 숏폼 <span>실습실</span></div>
+      <div class="spacer"></div>
+      
+    </div>
+    <nav class="tabs" aria-label="수업 단계">
+      <a href="#home">오늘 수업</a>
+      <a href="#plan">1부 기획</a>
+      <a href="#make">2부 만들기</a>
+      <a href="#edit">3부 편집</a>
+      <a href="#agent">4부 에이전트</a>
+      <a href="#final">5부 완성</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= HOME ================= -->
+<section class="view" id="v-home">
+  <div class="block">
+    <p class="eyebrow">미래일자리 서울 · 2026. 10. 23.(금)</p>
+    <h1>생성형 AI로 만드는<br>숏폼·홍보영상</h1>
+    <p class="lead">오늘 브루(Vrew)로 30~60초 세로 영상 한 편을 직접 만들고 MP4로 가져갑니다. 이 페이지에서 프롬프트를 복사해 그대로 따라 하면 됩니다.</p>
+  </div>
+  <div class="grid">
+    <div class="card tint"><span class="pill t">화면</span><h3>9:16 세로형</h3><p class="small muted">릴스·쇼츠·틱톡에 바로 올리는 비율</p></div>
+    <div class="card tint"><span class="pill c">길이</span><h3>30~60초</h3><p class="small muted">장면 5개 · 장면마다 한 문장</p></div>
+    <div class="card tint"><span class="pill l">결과</span><h3>MP4 한 편</h3><p class="small muted">내 주제로 만든 홍보·소개 영상</p></div>
+  </div>
+  <div class="block">
+    <h2>오늘의 흐름</h2>
+    <div class="table-wrap"><table id="schedule">
+      <thead><tr><th>순서</th><th>내용</th><th>할 일</th></tr></thead>
+      <tbody>
+        <tr><td>시작</td><td>오리엔테이션 · 브루 시작하기</td><td>브루 실행 · 로그인 · 크레딧 확인</td></tr>
+        <tr><td>1부</td><td><a href="#plan">AI로 영상 기획하기</a></td><td>기획시트 + AI로 대본 받기</td></tr>
+        <tr><td>2부</td><td><a href="#make">AI 영상 만들기</a></td><td>텍스트로 비디오 · 이미지→AI 비디오</td></tr>
+        <tr><td>3부</td><td><a href="#edit">영상 편집하기</a></td><td>편집 미션 ①~⑥</td></tr>
+        <tr><td>4부</td><td><a href="#agent">Vrew 에이전트</a></td><td>말로 편집 맡기고 비교하기</td></tr>
+        <tr><td>5부</td><td><a href="#final">나만의 홍보영상</a></td><td>내 영상 만들고 MP4로 출력 · 공유</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="block">
+    <h2>시작 전 체크</h2>
+    <div class="check" data-key="pre">
+      <label><input type="checkbox"><span>브루를 최신 버전으로 실행했다</span></label>
+      <label><input type="checkbox"><span>브루에 로그인했고 남은 크레딧을 확인했다</span></label>
+      <label><input type="checkbox"><span>ChatGPT나 Claude 같은 AI 챗봇을 하나 열어 두었다</span></label>
+      <label><input type="checkbox"><span>대본을 붙여 둘 메모장을 열어 두었다</span></label>
+    </div>
+  </div>
+  <div class="block">
+    <h2>브루 시작하기 · 텍스트로 비디오 3단계</h2>
+    <div class="grid">
+      <div class="card"><span class="pill">1 스타일 고르기</span><p class="small">화면 비율(오늘은 9:16)과 영상 스타일(목적) 정하기</p></div>
+      <div class="card"><span class="pill l">2 대본 작성</span><p class="small">준비한 대본 붙여 넣기 또는 AI 글쓰기</p></div>
+      <div class="card"><span class="pill t">3 비디오 꾸미기</span><p class="small">AI 목소리 · 이미지 스타일 · 배경음악 고르고 완료</p></div>
+    </div>
+    <p class="small muted">시작: 파일 → 새로 만들기 → 텍스트로 비디오 만들기 · 완료하면 편집 화면이 열려요 (3부에서 고칩니다)</p>
+  </div>
+  <div class="block">
+    <h2>짝꿍과 10초 인사</h2>
+    <div class="note">저는 ○○○입니다. 오늘 ○○○ 영상을 만들어서 ○○○에게 보여주고 싶어요.<br><span class="muted">예: 저는 김OO입니다. 오늘 우리 동네 빵집 영상을 만들어서 출근길 직장인에게 보여주고 싶어요.</span></div>
+  </div>
+  <div class="block">
+    <h2>AI 영상은 이렇게 만들어집니다</h2>
+    <div class="grid">
+      <div class="card"><span class="pill t">1 기획</span><p class="small">주제 · 보는 사람 · 대본 · 5장면</p></div>
+      <div class="card"><span class="pill c">2 생성</span><p class="small">텍스트로 비디오 · AI 이미지 · AI 비디오</p></div>
+      <div class="card"><span class="pill l">3 편집</span><p class="small">자막 · 목소리 · 이미지 · 음악</p></div>
+      <div class="card"><span class="pill">4 완성</span><p class="small">점검 · 수정 · MP4 출력</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PLAN ================= -->
+<section class="view" id="v-plan" hidden>
+  <div class="block">
+    <p class="eyebrow">1부</p>
+    <h1>AI로 영상 기획하기</h1>
+    <p class="lead">무엇을 누구에게 보여줄지 먼저 정합니다. 칸을 채우면 아래 프롬프트가 자동으로 완성됩니다. 그대로 복사해서 AI 챗봇에 붙여 넣으세요.</p>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>첫 3초</h3><p class="small muted">질문이나 완성된 결과 화면으로 시작해서 넘기지 않게 붙잡기</p></div>
+    <div class="card"><h3>한 영상 한 메시지</h3><p class="small muted">하고 싶은 말을 한 문장으로 줄이기</p></div>
+    <div class="card"><h3>보는 사람이 분명</h3><p class="small muted">누구에게 보여줄 영상인지 먼저 정하기</p></div>
+    <div class="card"><h3>5장면 구조</h3><p class="small muted">30초 기준 장면당 5~8초 · 장면마다 한 문장</p></div>
+  </div>
+  <div class="block">
+    <h2>실습 ① 나의 기획시트</h2>
+    <div class="form" id="planForm">
+      <label for="pType">영상 유형
+        <select id="pType">
+          <option>제품·가게 홍보</option><option>직업·자기소개</option><option>여행·지역 소개</option>
+          <option>생활정보</option><option>공익 캠페인</option><option>AI 창작 스토리</option>
+        </select></label>
+      <label for="pTopic">주제 · 소개할 대상<input id="pTopic" value="우리 동네 작은 빵집"></label>
+      <label for="pWho">보는 사람<input id="pWho" value="출근길 30대 직장인"></label>
+      <label for="pOne">꼭 전하고 싶은 한 문장<input id="pOne" value="매일 아침 갓 구운 빵을 만날 수 있다"></label>
+      <label for="pLen">길이<select id="pLen"><option>30</option><option>40</option><option>60</option></select></label>
+      <label for="pStyle">화풍<select id="pStyle"><option>실사형</option><option>3D 애니메이션</option><option>일러스트</option></select></label>
+      <label for="pMood">분위기<input id="pMood" value="따뜻하고 친근한"></label>
+    </div>
+    <p class="small muted" id="pStructure"></p>
+    <div class="prompt"><div class="ph"><span class="lab">AI 기획 프롬프트 · 내 입력으로 자동 완성</span><button class="copy" data-copy="planOut">복사</button></div><pre id="planOut"></pre></div>
+    <div class="note">AI가 준 대본은 소리 내어 읽어 보세요. 너무 길면 "장면마다 더 짧게 줄여 줘"라고 다시 요청합니다. 사실과 다른 내용이나 '최고·100%' 같은 과장은 지웁니다. 완성된 대본은 메모장에 저장해 두세요. 5부에서 그대로 브루에 붙여 넣습니다.</div>
+  </div>
+  <div class="block">
+    <h2>짝꿍에게 내 영상 소개하기</h2>
+    <div class="grid">
+      <div class="card"><span class="pill t">말하는 사람</span><p class="small">"○○에게 ○○를 알려 주는 영상이에요. 첫 장면은 ○○로 시작해요."</p></div>
+      <div class="card"><span class="pill l">듣는 사람</span><p class="small">한 가지만 제안하기: "첫 장면에 ○○를 보여주면 궁금할 것 같아요"</p></div>
+    </div>
+  </div>
+  <div class="block">
+    <h2>유형별 추천 구성</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>유형</th><th>장면 흐름</th></tr></thead>
+      <tbody id="structTable"></tbody>
+    </table></div>
+  </div>
+  <div class="block">
+    <h2>바로 쓰는 예시 대본 6개</h2>
+    <p class="lead">주제가 떠오르지 않으면 하나 골라 그대로 쓰거나 내 이야기로 바꾸세요. 등장하는 가게와 인물은 모두 가상입니다.</p>
+    <div class="block" id="examples"></div>
+  </div>
+</section>
+
+<!-- ================= MAKE ================= -->
+<section class="view" id="v-make" hidden>
+  <div class="block">
+    <p class="eyebrow">2부</p>
+    <h1>AI 영상 만들기</h1>
+    <p class="lead">모두 같은 샌드위치 대본으로 연습합니다. 대본으로 영상 초안을 만든 뒤 요리 장면 하나만 AI 비디오로 바꿔 봅니다.</p>
+  </div>
+  <div class="block">
+    <h2>공통 대본</h2>
+    <div class="prompt"><div class="ph"><span class="lab">AI와 함께 만드는 초간단 샌드위치 · 약 30초</span><button class="copy" data-copy="scriptOut">복사</button></div><pre id="scriptOut"></pre></div>
+  </div>
+  <div class="block">
+    <h2>실습 ② 텍스트로 비디오</h2>
+    <div class="grid">
+      <div class="card"><ol class="steps">
+        <li><span>파일 → 새로 만들기 → <b>텍스트로 비디오 만들기</b></span></li>
+        <li><span><b>① 스타일 고르기</b> 화면 비율 9:16 · 정보 전달 계열</span></li>
+        <li><span><b>② 대본 작성</b> 위 공통 대본 붙여 넣기</span></li>
+        <li><span><b>③ 비디오 꾸미기</b> AI 목소리 고르고 미리 듣기</span></li>
+        <li><span><b>③ 비디오 꾸미기</b> 이미지 스타일에 아래 <b>전체 스타일</b> 붙여 넣기</span></li>
+        <li><span>완료 후 처음부터 끝까지 재생</span></li>
+      </ol></div>
+      <div class="card tint"><h3>재생하면서 세 가지만 확인</h3><ul class="dots small">
+        <li>대본이 장면에 맞게 나뉘었나</li><li>이미지가 대본 내용을 보여주나</li><li>목소리와 자막이 자연스럽나</li></ul>
+        <p class="small muted">클립 수가 5개와 달라도 정상입니다.</p></div>
+    </div>
+  </div>
+  <div class="block">
+    <h2>화풍 고르기</h2>
+    <p class="small muted">하나를 누르면 아래 모든 이미지 프롬프트가 그 화풍으로 바뀝니다.</p>
+    <div class="chips" id="styleChips"></div>
+    <div class="prompt"><div class="ph"><span class="lab">전체 스타일 · 브루 이미지 스타일 칸에 붙여 넣기</span><button class="copy" data-copy="styleOut">복사</button></div><pre id="styleOut"></pre></div>
+  </div>
+  <div class="block">
+    <h2>장면별 프롬프트</h2>
+    <p class="small muted">브루가 만든 이미지가 어색하면 해당 장면의 이미지 프롬프트로 다시 생성합니다.</p>
+    <div class="block" id="scenes"></div>
+  </div>
+  <div class="block">
+    <h2>같은 캐릭터가 계속 나오게 하기</h2>
+    <div class="grid">
+      <div class="card"><span class="pill t">1</span><p class="small">씬 1 요리사 이미지를 마음에 들 때까지 만들기</p></div>
+      <div class="card"><span class="pill c">2</span><p class="small">그 이미지를 다른 장면 생성 때 <b>참고 이미지</b>로 추가</p></div>
+      <div class="card"><span class="pill l">3</span><p class="small">아래 캐릭터 고정 문구를 모든 장면 프롬프트 앞에 붙이기</p></div>
+    </div>
+    <div class="prompt"><div class="ph"><span class="lab">캐릭터 고정 문구</span><button class="copy" data-copy="charOut">복사</button></div><pre id="charOut">짧은 검은 머리에 겨자색 앞치마와 흰 티셔츠를 입은 친근한 20대 요리사, 모든 장면에서 같은 얼굴과 옷차림 유지</pre></div>
+  </div>
+  <div class="block">
+    <h2>실습 ③ 씬 3 이미지 → AI 비디오</h2>
+    <div class="grid">
+      <div class="card"><ol class="steps">
+        <li><span>편집 화면에서 씬 3 이미지 선택</span></li>
+        <li><span>이 이미지로 생성 → <b>AI로 비디오 생성</b></span></li>
+        <li><span>시작 이미지가 지정됐는지 확인</span></li>
+        <li><span>아래 영상 프롬프트 붙여 넣기</span></li>
+        <li><span>길이·비율·소리 옵션 확인 (모델마다 다름)</span></li>
+        <li><span>결과를 보고 기존 장면에 적용</span></li>
+      </ol></div>
+      <div class="card tint"><h3>AI 비디오 vs 이미지 애니메이션</h3>
+        <p class="small"><b>AI 비디오</b>는 손과 재료가 실제로 움직이는 새 영상을 만듭니다. 시간과 크레딧이 듭니다.</p>
+        <p class="small"><b>이미지 애니메이션</b>은 이미지 전체를 천천히 확대하거나 이동합니다. 빠르고 이미지가 그대로 유지됩니다.</p>
+        <p class="small muted">이미지 애셋 → 애니메이션 → 이동 → 사용자 지정 (4.8.0)</p></div>
+    </div>
+  </div>
+  <div class="block">
+    <h2>영상 프롬프트 만들기</h2>
+    <p class="lead">이미지 프롬프트는 '어떻게 생겼나'를 쓰고 영상 프롬프트는 '어떻게 움직이나'를 씁니다. 여섯 칸을 바꾸면 프롬프트가 완성됩니다.</p>
+    <div class="form" id="vidForm">
+      <label for="vWho">인물 · 누가<input id="vWho" value="요리사가"></label>
+      <label for="vDo">행동 · 무엇을<input id="vDo" value="식빵 위에 신선한 양상추, 토마토, 치즈를 순서대로 올린다"></label>
+      <label for="vWhere">장소 · 어디서<input id="vWhere" value="밝고 깨끗한 주방에서"></label>
+      <label for="vMood">분위기 · 어떤 느낌<input id="vMood" value="따뜻한 자연광, 경쾌한 요리 영상 분위기"></label>
+      <label for="vCam">카메라<input id="vCam" value="카메라는 조리대를 가까이에서 촬영한다"></label>
+      <label for="vNo">금지 사항<input id="vNo" value="손의 움직임이 자연스럽고 음식 모양이 유지된다. 화면에 글자나 로고는 넣지 않는다"></label>
+    </div>
+    <div class="prompt"><div class="ph"><span class="lab">영상 프롬프트 · 자동 완성</span><button class="copy" data-copy="vidOut">복사</button></div><pre id="vidOut"></pre></div>
+  </div>
+</section>
+
+<!-- ================= EDIT ================= -->
+<section class="view" id="v-edit" hidden>
+  <div class="block">
+    <p class="eyebrow">3부</p>
+    <h1>영상 편집하기</h1>
+  </div>
+  <div class="big">먼저 무엇을 편집할지 선택하고<br>그다음 기능을 실행합니다</div>
+  <div class="grid">
+    <div class="card"><span class="pill">씬</span><p class="small">주제·장면별 클립 묶음</p></div>
+    <div class="card"><span class="pill t">클립</span><p class="small">번호가 붙은 박스 · 자막이 표시되는 단위</p></div>
+    <div class="card"><span class="pill c">워드</span><p class="small">클립 안의 작은 편집 단위</p></div>
+    <div class="card"><span class="pill l">애셋</span><p class="small">이미지·동영상·텍스트·음원</p></div>
+  </div>
+  <div class="block">
+    <h2>편집 미션 <span class="progress" id="editProg"></span></h2>
+    <div class="check" data-key="edit" data-prog="editProg">
+      <label><input type="checkbox"><span><b>① 영상줄·자막줄</b> 자막줄(아랫줄)에서 첫 문장을 "누구나 쉽게 만드는 샌드위치!"로 고치기 → 영상줄(윗줄)에서 워드 하나 지워 보기 → Ctrl+Z로 되돌리기</span></label>
+      <label><input type="checkbox"><span><b>② 클립 나누기·합치기</b> 씬 3 문장의 "토마토," 뒤에서 영상줄 Enter로 나누기 → 뒤 클립 맨 앞에서 Backspace로 합치기 → 자막줄 Enter(줄바꿈)와 비교</span></label>
+      <label><input type="checkbox"><span><b>③ 자막 서식</b> 아무것도 선택하지 않고 전체 자막을 흰색으로 → 마지막 클립의 "완성!"만 노란색으로</span></label>
+      <label><input type="checkbox"><span><b>④ 워드별 이미지</b> "토마토"와 "치즈" 워드 위치에 이미지를 넣고 표시 범위 테두리를 좌우로 조절</span></label>
+      <label><input type="checkbox"><span><b>⑤ AI 목소리</b> 1번 클립만 연필(음성 편집) 버튼으로 목소리 바꾸고 다시 생성 → 2번 클립과 이어서 들어 보기</span></label>
+      <label><input type="checkbox"><span><b>⑥ 효과음·배경음악</b> 삽입 → 효과음으로 재료 놓는 소리 · 삽입 → 배경음악으로 밝은 음악 · 내레이션이 잘 들리게 음량 조절</span></label>
+    </div>
+  </div>
+  <div class="block">
+    <h2>헷갈릴 때 보는 표</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>어디서 · 무엇을</th><th>결과</th></tr></thead>
+      <tbody>
+        <tr><td>영상줄(윗줄)에서 워드 삭제</td><td>그 말과 영상 구간이 함께 사라짐</td></tr>
+        <tr><td>자막줄(아랫줄)에서 글자 수정</td><td>화면 자막만 바뀜 · AI 목소리는 그대로</td></tr>
+        <tr><td>영상줄에서 Enter</td><td>클립 나누기</td></tr>
+        <tr><td>자막줄에서 Enter</td><td>자막 줄바꿈만</td></tr>
+        <tr><td>뒤 클립 맨 앞에서 Backspace</td><td>클립 합치기</td></tr>
+        <tr><td>아무것도 선택하지 않고 서식 변경</td><td>전체 자막에 적용</td></tr>
+        <tr><td>클립 선택 후 서식 변경</td><td>그 클립에만 적용</td></tr>
+        <tr><td>프리뷰에서 단어 선택 후 서식</td><td>그 단어만 강조</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="block">
+    <h2>실수했을 때</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>이런 일이 생기면</th><th>먼저 확인</th><th>해결</th></tr></thead>
+      <tbody>
+        <tr><td>영상 일부가 사라짐</td><td>영상줄 워드를 지웠나?</td><td>바로 Ctrl+Z</td></tr>
+        <tr><td>자막이 전부 바뀜</td><td>아무것도 선택하지 않았나?</td><td>되돌린 뒤 클립을 선택하고 다시</td></tr>
+        <tr><td>사진이 겹쳐 보임</td><td>이미지 애셋이 여러 개인가?</td><td>필요 없는 애셋 삭제 · 범위 조정</td></tr>
+        <tr><td>목소리와 화면이 안 맞음</td><td>음성을 다시 생성했나?</td><td>클립 길이와 이미지 범위 다시 확인</td></tr>
+        <tr><td>효과음 위치가 엉뚱함</td><td>어느 워드에 붙어 있나?</td><td>시작 위치 이동</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note">발음이 이상하면 음성용 문장만 바꿉니다. 예: 250ml → "이백오십 밀리리터". 화면 자막은 250ml 그대로 둡니다. 자주 나오는 단어는 AI 목소리 → 발음 사전에 등록합니다.</div>
+  </div>
+</section>
+
+<!-- ================= AGENT ================= -->
+<section class="view" id="v-agent" hidden>
+  <div class="block">
+    <p class="eyebrow">4부</p>
+    <h1>Vrew 에이전트에게 맡기기</h1>
+    <p class="lead">3부에서 손으로 해 본 일을 이번엔 말로 맡겨 봅니다. 결과는 반드시 재생해서 확인하세요. 요청 끝에 "다른 것은 바꾸지 마"를 붙이면 범위가 정확해집니다.</p>
+  </div>
+  <div class="block" id="agentList"></div>
+  <div class="grid">
+    <div class="card"><span class="pill t">정확성</span><p class="small">지정한 클립·단어에만 적용됐나</p></div>
+    <div class="card"><span class="pill c">완성도</span><p class="small">효과음·음성·이미지가 자연스럽나</p></div>
+    <div class="card"><span class="pill l">복구</span><p class="small">마음에 안 들면 Ctrl+Z 또는 손으로 수정</p></div>
+  </div>
+  <div class="note">4.8.0부터는 클립이나 자막 단어를 선택한 뒤 <b>Vrew 에이전트에 추가</b>로 대상을 직접 연결할 수 있습니다. 에이전트가 되물으면 원하는 결과를 더 구체적으로 답해 주세요.</div>
+</section>
+
+<!-- ================= FINAL ================= -->
+<section class="view" id="v-final" hidden>
+  <div class="block">
+    <p class="eyebrow">5부</p>
+    <h1>나만의 홍보영상 완성</h1>
+    <p class="lead">1부에서 만든 대본으로 내 영상을 만듭니다. 처음부터 만들기 어려우면 샌드위치 영상의 대본·이미지·자막을 바꿔 내 주제로 다시 만들어도 됩니다.</p>
+  </div>
+  
+  <div class="card"><ol class="steps">
+    <li><span><b>기획 보완</b> 대본 다시 읽기 · 첫 3초 점검 · 길이 맞추기</span></li>
+    <li><span><b>영상 생성</b> 텍스트로 비디오 · 9:16 · 목소리 · 이미지 스타일</span></li>
+    <li><span><b>이미지·영상 수정</b> 어색한 이미지 교체 · 필요하면 한 장면 AI 비디오</span></li>
+    <li><span><b>편집</b> 자막 · 목소리 · 배경음악 · 효과음</span></li>
+    <li><span><b>출력</b> 저장 → 처음부터 재생 → MP4 내보내기</span></li>
+  </ol><p class="small muted">내 속도에 맞게 차근차근 진행하세요. 막히면 언제든 손을 들어 주세요.</p></div>
+  <div class="grid">
+    <div class="card"><h3>입문</h3><ul class="dots small"><li>30초 내외</li><li>자동 생성 이미지 중심</li><li>자막·목소리·음악 편집</li><li>에이전트 미션 1개</li></ul></div>
+    <div class="card"><h3>기본·숙련</h3><ul class="dots small"><li>40~60초</li><li>장면별 이미지 직접 생성·수정</li><li>최소 한 장면 AI 비디오</li><li>에이전트 미션 2~3개</li></ul></div>
+  </div>
+  <div class="block">
+    <h2>완성 점검표 <span class="progress" id="finalProg"></span></h2>
+    <div class="check" data-key="final" data-prog="finalProg">
+      <label><input type="checkbox"><span>주제와 보는 사람이 분명하다</span></label>
+      <label><input type="checkbox"><span>처음 3초에 관심을 끄는 내용이 있다</span></label>
+      <label><input type="checkbox"><span>흐름이 자연스럽다</span></label>
+      <label><input type="checkbox"><span>자막 오타와 위치를 확인했다</span></label>
+      <label><input type="checkbox"><span>AI 목소리와 배경음악이 잘 들린다</span></label>
+      <label><input type="checkbox"><span>한 가지 이상 직접 편집했다</span></label>
+      <label><input type="checkbox"><span>MP4 파일로 정상 출력했다</span></label>
+    </div>
+  </div>
+  <div class="block">
+    <h2>첫 영상 상영회</h2>
+    <div class="grid">
+      <div class="card"><span class="pill t">장면</span><p class="small">"이 장면이 제일 좋았어요"</p></div>
+      <div class="card"><span class="pill c">소리</span><p class="small">"목소리·음악이 잘 어울렸어요"</p></div>
+      <div class="card"><span class="pill l">글자</span><p class="small">"자막이 한눈에 들어왔어요"</p></div>
+    </div>
+    <p class="small muted">작품이 끝나면 세 가지 중 하나를 골라 칭찬해 주세요 · 마지막엔 오늘을 한 단어로!</p>
+  </div>
+  <div class="note">올리기 전에: 실존 인물이나 브랜드 로고를 흉내 낸 영상은 올리지 않습니다. AI 이미지·목소리·음악을 상업적으로 쓸 때는 브루 이용약관과 라이선스를 확인하세요.</div>
+</section>
+
+</main>
+
+
+<script>
+(function(){
+  const $ = (s, r=document) => r.querySelector(s);
+  const store = {
+    get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+    set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  /* ---------- data ---------- */
+  const SCRIPT = [
+    "출출할 때 딱 좋은 초간단 샌드위치! 함께 만들어 볼까요?",
+    "식빵, 토마토, 양상추, 치즈만 준비하면 돼요.",
+    "식빵 위에 양상추와 토마토, 치즈를 차곡차곡 올려주세요.",
+    "반으로 잘라 접시에 담으면 맛있는 샌드위치 완성!",
+    "간단하고 맛있는 한 끼! 여러분도 도전해 보세요."
+  ];
+  const STYLES = {
+    "실사형": "실사 사진 스타일",
+    "3D 애니메이션": "밝은 3D 애니메이션 스타일",
+    "일러스트": "따뜻한 손그림 일러스트 스타일"
+  };
+  const STYLE_TAIL = "밝고 경쾌한 요리 콘텐츠, 9:16 세로 구도, 따뜻한 자연광, 화면에 글자나 로고 없음";
+  const SCENES = [
+    {n:1, role:"도입", sec:"5초", img:"scene1", learn:"클립 선택 · AI 목소리 변경 · 배속",
+     ip:"밝은 주방에서 짧은 검은 머리에 겨자색 앞치마를 두른 친근한 요리사가 완성된 샌드위치를 들고 카메라를 향해 웃으며 인사하는 모습",
+     vp:"요리사가 환하게 웃으며 샌드위치를 카메라 앞으로 천천히 내민다. 카메라는 고정. 따뜻한 자연광. 화면에 글자나 로고는 넣지 않는다."},
+    {n:2, role:"재료 소개", sec:"6초", img:"scene2", learn:"'토마토'·'치즈' 워드에 이미지 삽입 · 표시 범위",
+     ip:"깨끗한 나무 조리대 위에 식빵, 토마토, 양상추, 슬라이스 치즈가 가지런히 놓인 모습, 위에서 비스듬히 내려다본 구도, 사람 없음",
+     vp:"카메라가 조리대 위 재료를 왼쪽에서 오른쪽으로 천천히 훑는다. 재료는 움직이지 않는다. 따뜻한 자연광. 화면에 글자나 로고는 넣지 않는다."},
+    {n:3, role:"요리 과정", sec:"8초", img:"scene3", learn:"이미지 → AI 비디오 · 클립 길이 · 효과음",
+     ip:"같은 요리사가 식빵 위에 양상추와 토마토, 치즈를 차례로 올리는 장면, 조리대를 가까이에서 촬영",
+     vp:"밝고 깨끗한 주방에서 요리사가 식빵 위에 신선한 양상추, 토마토, 치즈를 순서대로 올린다. 손의 움직임이 자연스럽고 음식의 모양이 유지된다. 카메라는 조리대를 가까이에서 촬영한다. 따뜻한 자연광, 경쾌한 요리 영상 분위기. 화면에 글자나 로고는 넣지 않는다."},
+    {n:4, role:"완성", sec:"6초", img:"scene4", learn:"소재 교체 · 자막 강조 · 이미지 애니메이션",
+     ip:"반으로 자른 샌드위치가 흰 접시에 담겨 양상추·토마토·치즈 층의 단면이 선명하게 보이는 모습, 사람 없음",
+     vp:"카메라가 접시 위 샌드위치 단면 쪽으로 천천히 다가간다. 샌드위치는 움직이지 않는다. 식욕을 돋우는 따뜻한 빛. 화면에 글자나 로고는 넣지 않는다."},
+    {n:5, role:"시식·마무리", sec:"6초", img:"scene5", learn:"마무리 문구 · 배경음악 · MP4 출력",
+     ip:"같은 요리사가 샌드위치를 한입 먹고 눈을 감은 채 만족스럽게 웃는 모습, 밝은 주방 배경",
+     vp:"요리사가 샌드위치를 한입 베어 물고 만족스럽게 고개를 끄덕이며 웃는다. 카메라는 고정. 따뜻한 자연광. 화면에 글자나 로고는 넣지 않는다."}
+  ];
+  const STRUCT = {
+    "제품·가게 홍보":"문제 제기 → 특징 → 장점 → 이용 유도",
+    "직업·자기소개":"관심 유도 → 직업 소개 → 하는 일 → 가치",
+    "여행·지역 소개":"장소 소개 → 볼거리 → 매력 → 방문 유도",
+    "생활정보":"질문 → 문제 → 해결 방법 → 요약",
+    "공익 캠페인":"문제 제시 → 원인 → 실천 방법 → 참여 독려",
+    "AI 창작 스토리":"등장인물 → 사건 → 변화 → 결말"
+  };
+  const EXAMPLES = [
+    {type:"제품·가게 홍보", title:"골목 빵집 '햇살베이커리'(가상)", img:"ex1", style:"따뜻한 실사 사진 스타일, 9:16 세로, 아침 햇살, 화면에 글자나 로고 없음",
+     script:["아침 7시, 갓 구운 빵 냄새 맡아 보셨나요?","햇살베이커리는 매일 새벽 직접 반죽해요.","대표 메뉴는 겉바속촉 소금빵!","출근길에 따뜻하게 하나 챙겨 가세요.","골목 끝 노란 간판, 햇살베이커리에서 기다릴게요."],
+     imgs:["이른 아침 작은 동네 빵집 진열대에 갓 구운 소금빵이 가득한 모습, 김이 모락모락","앞치마를 두른 제빵사가 밀가루 묻은 손으로 반죽을 치대는 모습","노릇하게 구워진 소금빵 하나를 가까이에서 찍은 모습, 버터가 반짝임","출근복 차림의 사람이 따뜻한 빵 봉투를 들고 미소 짓는 모습","골목 끝 노란 간판이 걸린 아담한 빵집 외관, 아침 햇살"]},
+    {type:"직업·자기소개", title:"바리스타의 하루", img:"ex2", style:"따뜻한 일러스트 스타일, 9:16 세로, 아늑한 카페, 화면에 글자나 로고 없음",
+     script:["커피 한 잔으로 하루를 바꾸는 사람, 바리스타입니다.","아침마다 원두 상태를 확인하고 머신을 점검해요.","손님 취향에 맞춰 한 잔씩 정성껏 내립니다.","가장 보람 있는 순간은 '맛있어요' 한마디예요.","오늘도 여러분의 하루를 응원합니다."],
+     imgs:["초록 앞치마를 두른 바리스타가 라테아트를 그리는 모습","바리스타가 원두를 손에 들고 향을 맡는 모습","손님과 웃으며 이야기하며 커피를 건네는 모습","손님이 커피를 마시고 엄지를 드는 모습","창가 햇살 아래 커피잔을 든 바리스타가 카메라를 보며 웃는 모습"]},
+    {type:"여행·지역 소개", title:"우리 동네 강변 산책길", img:"ex3", style:"실사 사진 스타일, 9:16 세로, 노을빛, 화면에 글자나 로고 없음",
+     script:["퇴근 후 잠깐, 걷기 좋은 곳 찾으세요?","우리 동네 강변 산책길을 소개합니다.","봄엔 벚꽃, 가을엔 억새가 반겨 줘요.","해 질 녘 노을은 꼭 보셔야 해요.","이번 주말, 가볍게 한번 걸어 보세요."],
+     imgs:["퇴근길 사람들이 걸어가는 도시 강변 산책로","강을 따라 길게 이어진 산책길을 위에서 내려다본 모습","한쪽은 벚꽃길, 한쪽은 은빛 억새가 흔들리는 산책로","강물 위로 주황빛 노을이 지는 모습","운동화를 신은 발이 산책로를 걷는 모습을 가까이에서"]},
+    {type:"생활정보", title:"택배 문자, 누르기 전에 잠깐!", img:"ex4", style:"깔끔한 플랫 일러스트 스타일, 9:16 세로, 밝은 노란 배경, 읽을 수 있는 글자 없음",
+     script:["택배 문자, 함부로 누르지 마세요!","모르는 번호가 보낸 링크는 피싱일 수 있어요.","공식 앱이나 홈페이지에서 직접 확인하세요.","이미 눌렀다면 바로 경찰이나 금융회사에 알리세요.","의심되면 열지 말고, 지우고, 확인하기!"],
+     imgs:["스마트폰 문자 알림을 보며 고개를 갸웃하는 중년 남성, 경고 표시 아이콘","링크가 담긴 말풍선 위에 빨간 경고 표시가 있는 스마트폰 화면","공식 앱 아이콘을 눌러 배송 상태를 확인하는 손","전화기를 들고 신고하는 사람, 방패 아이콘","스마트폰을 들고 안심한 표정으로 엄지를 드는 사람"]},
+    {type:"공익 캠페인", title:"텀블러 하나의 힘", img:"ex5", style:"밝은 3D 애니메이션 스타일, 9:16 세로, 초록 공원, 화면에 글자나 로고 없음",
+     script:["오늘 마신 커피 컵, 어디로 갔을까요?","일회용 컵은 재활용이 생각보다 어려워요.","텀블러 하나면 매일 컵 하나를 줄일 수 있어요.","작은 습관이 쌓이면 큰 변화가 됩니다.","오늘부터 텀블러와 함께해요!"],
+     imgs:["공원 쓰레기통에 넘치도록 쌓인 일회용 커피 컵","분리수거장에서 컵 뚜껑과 빨대가 뒤섞인 모습","손에 든 은색 텀블러와 그 옆의 일회용 컵 더미","여러 사람이 각자 텀블러를 들고 웃는 모습","깨끗한 공원 벤치에 놓인 텀블러, 맑은 하늘"]},
+    {type:"AI 창작 스토리", title:"꼬마 로봇 삐삐의 첫 요리", img:"ex6", style:"귀여운 3D 애니메이션 스타일, 9:16 세로, 아늑한 부엌, 화면에 글자나 로고 없음",
+     script:["꼬마 로봇 삐삐의 꿈은 요리사였어요.","첫 도전은 달걀 프라이!","그런데 달걀이 펑! 부엌은 엉망이 됐죠.","포기하지 않고 다시, 또다시 도전했어요.","드디어 완성! 삐삐의 첫 요리는 대성공!"],
+     imgs:["작은 요리사 모자를 쓴 둥근 흰색 로봇이 부엌에서 프라이팬을 든 모습","로봇이 달걀을 조심스럽게 깨려는 모습","달걀이 튀어 부엌이 엉망이 되고 로봇이 놀란 모습","로봇이 앞치마를 다시 고쳐 매고 프라이팬을 드는 모습","완벽한 달걀 프라이를 접시에 담아 자랑스럽게 든 로봇"]}
+  ];
+  const AGENT = [
+    {lab:"미션 1 · 효과음 자동 삽입", tag:"하", text:"현재 영상의 대본과 장면을 분석해서 요리 동작에 어울리는 효과음을 넣어 줘. 재료를 조리대에 놓는 장면에는 가벼운 접시 소리, 재료를 올리는 장면에는 자연스러운 조리 효과음, 샌드위치 완성 장면에는 밝은 효과음을 사용해 줘. 효과음은 실제 동작이 나오는 시점에 넣고 내레이션이 잘 들리도록 음량을 조절해 줘.", check:"효과음 위치가 동작과 맞나 · 내레이션이 묻히지 않나"},
+    {lab:"미션 2 · 워드별 AI 이미지", tag:"중", text:"재료를 소개하는 구간에서 '토마토'라는 단어가 나오는 순간에는 빨갛고 신선한 토마토 이미지를, '치즈'라는 단어가 나오는 순간에는 노란 슬라이스 치즈 이미지를 각각 AI로 생성해서 넣어 줘. 이미지가 보이는 구간은 해당 단어를 말하는 시점에 맞추고 기존 내레이션과 자막은 그대로 둬.", check:"그 단어를 말할 때 이미지가 뜨나 · 다른 장면은 그대로인가"},
+    {lab:"미션 3-1 · 선택한 클립 목소리", tag:"중", pre:"먼저 1번 클립을 선택하고 Vrew 에이전트에 추가합니다", text:"선택한 클립의 AI 목소리를 '애덤'으로 바꿔 줘. 다른 클립의 AI 목소리는 수정하지 마.", check:"1번 클립만 목소리가 바뀌었나 · 발음과 길이가 자연스러운가"},
+    {lab:"미션 3-2 · 선택한 클립 배속", tag:"중", text:"선택한 클립만 1.2배속으로 바꿔 줘. 나머지 클립의 재생 속도는 그대로 둬.", check:"1번 클립만 짧아졌나 · 너무 빠르지 않나"},
+    {lab:"심화 · 자막 디자인", tag:"선택", text:"영상의 모든 기본 자막을 읽기 편한 흰색 굵은 글씨로 통일하고 화면 아래쪽에 배치해 줘. 마지막 장면의 '완성!'이라는 단어만 노란색으로 강조해 줘. 다른 단어는 변경하지 마.", check:"전체 변경과 단어 강조가 둘 다 맞게 적용됐나"},
+    {lab:"심화 · 이미지 애니메이션", tag:"선택", pre:"완성 샌드위치 이미지를 선택해서 연결합니다", text:"선택한 완성 샌드위치 이미지에 천천히 확대되는 애니메이션을 적용해 줘. 이미지 자체는 바꾸지 말고 부드럽게 확대해 줘.", check:"이미지는 그대로이고 움직임만 생겼나"}
+  ];
+
+  /* ---------- copy ---------- */
+  function copyFrom(btn){
+    const el = document.getElementById(btn.dataset.copy);
+    const text = el.innerText;
+    const ok = () => { btn.textContent = "복사됨"; btn.classList.add("done"); setTimeout(()=>{btn.textContent="복사"; btn.classList.remove("done");},1400); };
+    const fallback = () => { const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent="선택됨 · Ctrl+C"; setTimeout(()=>{btn.textContent="복사";},2200); };
+    try{ navigator.clipboard.writeText(text).then(ok, fallback); }catch(e){ fallback(); }
+  }
+  document.addEventListener("click", e => { const b = e.target.closest("button.copy"); if(b) copyFrom(b); });
+  const promptBox = (id, label, text) => `<div class="prompt"><div class="ph"><span class="lab">${esc(label)}</span><button class="copy" data-copy="${id}">복사</button></div><pre id="${id}">${esc(text)}</pre></div>`;
+
+  /* ---------- tabs ---------- */
+  const TABS = ["home","plan","make","edit","agent","final"];
+  function show(t){
+    if(!TABS.includes(t)) t = "home";
+    TABS.forEach(x => { $("#v-"+x).hidden = x !== t; });
+    document.querySelectorAll("nav.tabs a").forEach(a => a.setAttribute("aria-current", a.getAttribute("href")==="#"+t ? "page" : "false"));
+    const cur = document.querySelector('nav.tabs a[aria-current="page"]'); if(cur && cur.scrollIntoView) cur.scrollIntoView({block:"nearest",inline:"center"});
+  }
+  document.querySelectorAll("nav.tabs a, #schedule a").forEach(a => a.addEventListener("click", e => {
+    e.preventDefault(); const t = a.getAttribute("href").slice(1); show(t);
+    try{ history.replaceState(null,"","#"+t); }catch(_){}
+    window.scrollTo({top:0});
+  }));
+  show((location.hash||"#home").slice(1));
+  window.addEventListener("hashchange", () => show(location.hash.slice(1)));
+
+  /* ---------- teacher mode ---------- */
+
+
+  /* ---------- plan ---------- */
+  $("#structTable").innerHTML = Object.entries(STRUCT).map(([k,v]) => `<tr><td>${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");
+  const planIds = ["pType","pTopic","pWho","pOne","pLen","pStyle","pMood"];
+  const saved = store.get("plan") || {};
+  planIds.forEach(id => { if(saved[id]) $("#"+id).value = saved[id]; });
+  function renderPlan(){
+    const v = {}; planIds.forEach(id => v[id] = $("#"+id).value.trim());
+    store.set("plan", v);
+    const scenes = v.pLen === "60" ? 6 : 5;
+    $("#pStructure").textContent = "추천 흐름: " + STRUCT[v.pType];
+    $("#planOut").textContent =
+`너는 숏폼 영상 기획자야. 아래 조건으로 세로형(9:16) 홍보영상을 기획해 줘.
+
+[영상 유형] ${v.pType}
+[주제] ${v.pTopic || "○○"}
+[보는 사람] ${v.pWho || "○○"}
+[꼭 전할 한 문장] ${v.pOne || "○○"}
+[길이] ${v.pLen}초 / ${scenes}장면
+[화풍] ${v.pStyle}
+[분위기] ${v.pMood || "밝고 경쾌한"}
+[추천 흐름] ${STRUCT[v.pType]}
+
+장면마다 ① 내레이션 한 문장 ② 화면에 보일 이미지 ③ 영상 움직임을 표로 정리해 줘.
+첫 장면은 3초 안에 관심을 끌게 하고 내레이션은 장면당 20자 안팎으로 짧게 써 줘.
+마지막에 내레이션만 따로 모아서 한 줄에 한 문장씩 다시 보여 줘.
+사실과 다른 내용이나 과장 표현(최고, 100% 등)은 넣지 마.`;
+  }
+  planIds.forEach(id => $("#"+id).addEventListener("input", renderPlan));
+  renderPlan();
+
+  $("#examples").innerHTML = EXAMPLES.map((x,i) => {
+    const sc = x.script.join("\n");
+    const ip = x.imgs.map((t,j)=>`씬${j+1}: ${t}, ${x.style}`).join("\n");
+    return `<article class="ex">
+      <div><div class="meta"><span class="pill">${esc(x.type)}</span></div><h3>${esc(x.title)}</h3>
+      ${promptBox("exS"+i, "대본 · 브루 텍스트로 비디오에 붙여 넣기", sc)}
+      <details class="more"><summary>장면별 이미지 프롬프트 보기</summary>${promptBox("exI"+i, "장면별 이미지 프롬프트", ip)}</details></div></article>`;
+  }).join("");
+
+  /* ---------- make ---------- */
+  $("#scriptOut").textContent = SCRIPT.join("\n");
+  let style = store.get("style") || "3D 애니메이션";
+  $("#styleChips").innerHTML = Object.keys(STYLES).map(k => `<button class="chip" data-style="${esc(k)}">${esc(k)}</button>`).join("");
+  function renderScenes(){
+    document.querySelectorAll("#styleChips .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.style===style ? "true":"false"));
+    const tail = `${STYLES[style]}, ${STYLE_TAIL}`;
+    $("#styleOut").textContent = tail;
+    $("#scenes").innerHTML = SCENES.map((s,i) => `<article class="scene">
+      <div><div class="meta"><span class="pill t">씬 ${s.n}</span><span class="pill">${esc(s.role)}</span></div>
+      <p class="say">"${esc(SCRIPT[i])}"</p>
+      <p class="small muted">편집에서 배울 것: ${esc(s.learn)}</p>
+      ${promptBox("ip"+i, "이미지 프롬프트", s.ip + ", " + tail)}
+      ${promptBox("vp"+i, "영상 프롬프트 (이미지→AI 비디오)", s.vp)}
+      </div></article>`).join("");
+  }
+  $("#styleChips").addEventListener("click", e => { const c = e.target.closest(".chip"); if(!c) return; style = c.dataset.style; store.set("style", style); renderScenes(); });
+  renderScenes();
+
+  const vidIds = ["vWho","vDo","vWhere","vMood","vCam","vNo"];
+  function renderVid(){
+    const g = id => $("#"+id).value.trim();
+    $("#vidOut").textContent = `${g("vWhere")} ${g("vWho")} ${g("vDo")}. ${g("vNo")}. ${g("vCam")}. ${g("vMood")}.`.replace(/\.\./g,".").replace(/\s+/g," ").trim();
+  }
+  vidIds.forEach(id => $("#"+id).addEventListener("input", renderVid));
+  renderVid();
+
+  /* ---------- agent ---------- */
+  $("#agentList").innerHTML = AGENT.map((a,i) => `<div class="card">
+    <div class="meta"><span class="pill ${a.tag==="하"?"l":a.tag==="중"?"c":""}">난이도 ${esc(a.tag)}</span></div>
+    ${a.pre ? `<p class="small"><b>준비:</b> ${esc(a.pre)}</p>` : ""}
+    ${promptBox("ag"+i, a.lab, a.text)}
+    <p class="small muted">확인: ${esc(a.check)}</p></div>`).join("");
+
+  /* ---------- checklists ---------- */
+  document.querySelectorAll(".check[data-key]").forEach(box => {
+    const key = "chk-" + box.dataset.key;
+    const boxes = [...box.querySelectorAll("input")];
+    boxes.forEach((b,i) => b.id = key + "-" + i);
+    const st = store.get(key) || [];
+    boxes.forEach((b,i) => b.checked = !!st[i]);
+    const prog = () => { if(box.dataset.prog) $("#"+box.dataset.prog).textContent = boxes.filter(b=>b.checked).length + " / " + boxes.length; };
+    box.addEventListener("change", () => { store.set(key, boxes.map(b=>b.checked)); prog(); });
+    prog();
+  });
+
+})();
+</script>
+
+</body>
+</html>
